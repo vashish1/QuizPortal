@@ -1,0 +1,133 @@
+.signupbox{
+	/*margin: 10px auto;*/
+	/*position: relative;
+	left: 50%;
+	top: 80%;
+	transform: translate(-50%,-50%);
+	*//*display: block;*/
+	background-color: rgba(204,204,204,.4);
+	width: 30%;
+	padding-bottom: 20px;
+	/*height: 60%;*/
+	border-radius: 10px;
+	text-align: center;
+	padding-top: 20px;
+	/*min-height: auto;*/
+	margin: 20px auto;
+}
+@font-face{
+	font-family: arca;
+	src:url('/static/fonts/Arca.otf');
+}
+@font-face{
+	font-family: mntl;
+	src:url('/static/fonts/ntailu.ttf');
+}
+.signupbox:hover{
+	background-image: linear-gradient(to bottom,rgba(255,127,80,1),rgba(255,127,80,.3));
+}
+.signupbox form{
+	padding: 5px;
+}
+.signupbox a{
+	text-decoration: none;
+	color: black;
+}
+.signupbox a:hover{
+	color:blue;
+}
+.signupbox input{
+	display: block;
+	/*margin:10px;*/
+	margin:0 auto;
+	margin-top:30px;
+	/*margin-bottom: -20px;*/
+	/*margin-bottom: 20px;*/
+	padding: 10px;
+	border-radius: 10px;
+	border:1px solid black;
+	background-color: #cccccc;
+
+	width: 80%;
+	text-transform: uppercase;
+	outline: none;	
+}
+input[type="submit"]{
+	width:30%;
+	background-image: linear-gradient(to bottom,rgba(255,127,80,1),rgba(255,127,80,.7));
+	cursor: pointer;
+	font-family: arca;
+	font-weight: 600;
+	transition:.5s;
+	/*background-color: #ff6666;*/
+}
+
+input[type="submit"]:hover{
+	background-image: linear-gradient(to top,rgba(0,0,0,.7),rgba(0,0,0,.2)) !important;
+	color:white;
+}
+
+::placeholder{
+	color: black;
+	font-family: mntl;
+}
+.log{
+	background-image: linear-gradient(to top,rgba(0,0,0,.7),rgba(0,0,0,.2)) !important;
+	color:white !important;
+}
+
+@media screen and (max-width: 500px){
+	.signupbox{
+	width: 90%;
+	overflow-y: scroll;
+}
+	input[type="submit"]{
+	width:30%;
+}
+
+}
+@media screen and (min-width: 501px ) and (max-width:768px){
+	.signupbox{
+	width: 60%;
+	overflow-y: scroll;
+}
+	input[type="submit"]{
+	width:30%;
+}
+
+}
+@media screen and (min-width:769px) and  (max-width: 1024px){
+	.signupbox{
+	top: 65%;
+	width: 50%;
+}
+	input[type="submit"]{
+	width:30%;
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

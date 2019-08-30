@@ -1,0 +1,91 @@
+
+.block{
+	margin: 3%;
+	padding:2%;
+	display:flex;
+	justify-content: space-between;
+	/*background-color: #eee;*/
+	transition: 2s;
+	font-family: mntl;
+	font-size: 20px;
+	/*overflow-y: scroll;*/
+	/*transition: .5s;*/
+}
+.btn-delete{
+	display: none;
+}
+.innerblock{
+	flex: 1;
+}
+
+.container{
+	overflow-y: scroll;
+	height: 60vh;
+}
+.block:hover .btn-delete{
+	display: block;
+}
+i{
+	transition: 1s;
+	font-size: 20px;
+}
+.icon2{
+	text-decoration: none;
+	color:red;
+	background-color: transparent;
+	border:none;
+	cursor: pointer;
+	/*font-size: 50px;*/
+}
+.icon1{
+	text-decoration: none;
+	color:blue;
+	background-color: transparent;
+	border:none;
+	cursor: pointer;
+}
+.icon3{
+	text-decoration: none;
+	color:green;
+	font-size: 50px;
+}
+.size{
+	font-size: 50px;
+}
+i:active{
+	transform: translateY(-10px);
+}
+.block:hover{
+	/*transform: translateZ(200px);*/
+	/*z-index: 100;*/
+	background-color: #ccc;
+	transform: translateY(5px);
+	/*transform: scaleZ(1.5);*/
+}
+
+.bottom{
+	text-align: center;
+	font-family: mntl;
+}
+
+.bottom p{
+	font-size: 40px;
+}
+
+@media screen and (min-width: 200px) and (max-width: 767px){
+	.block {
+		font-size: 10px;
+	}
+	.container{
+		height: 55vh;
+	}
+
+}
+
+
+@media screen /*and (min-width: 380px) and*/ (min-width: 768px){
+	.block {
+		font-size: 15px;
+	}
+
+}

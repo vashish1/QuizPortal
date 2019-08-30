@@ -1,0 +1,83 @@
+.signupbox{
+	margin: 20px auto;
+	/*position: absolute;
+	left: 50%;
+	top:62.5%;
+	transform: translate(-50%,-50%);*/
+	/*display: block;*/
+	background-color: rgba(204,204,204,.4);
+	width: 30%;
+	/*height: 72.5%;*/
+	border-radius: 10px;
+	padding-top: 30px;
+	/*margin-top: 20px;*/
+	/*margin-top: 50px;*/
+	text-align: center;
+	padding-bottom: 10px;
+	transition: background-image 5s;
+}
+.signupbox:hover{
+	background-image: linear-gradient(to bottom,rgba(255,127,80,1),rgba(255,127,80,.3));
+}
+.signupbox input{
+	display: block;
+	margin:0 auto;
+	margin-bottom: 10px;
+	padding: 10px;
+	border-radius: 10px;
+	border:1px solid black;
+	background-color: #cccccc;
+	width: 80%;
+	text-transform: uppercase;
+	outline: none;
+	transition: .5s;	
+}
+input[type="submit"]{
+	width:30%;
+	background-image: linear-gradient(to bottom,rgba(255,127,80,1),rgba(255,127,80,.7));
+	cursor: pointer;
+	font-family: arca;
+	font-weight: 600;
+}
+input[type="submit"]:hover{
+	background-image: linear-gradient(to top,rgba(0,0,0,.7),rgba(0,0,0,.2)) !important;
+	color:white;
+}
+::placeholder{
+	color: black;
+	font-family: mntl;
+}
+a.addques{
+	color: black;
+	font-family: arca;
+}
+.addques:hover{
+	color:blue;
+}
+
+.signn{
+	background-image:linear-gradient(to top,rgba(0,0,0,.7),rgba(0,0,0,.2)) !important;
+	color:white !important;
+}
+
+@media (max-width: 500px){
+	.signupbox{
+	width: 90%;
+	height: 65%;
+	padding-top: 20px;
+	/*padding-bottom: 20px;*/
+	/*padding-bottom: 10px;*/
+	/*overflow-y: scroll;*/
+}
+}
+@media screen and (min-width: 501px ) and (max-width:1024px) {
+	.signupbox{
+	width: 60%;
+	height: 65%;
+	/*padding-bottom: 60px;*/
+	/*margin-bottom: 10px;*/
+	/*padding-bottom: 10px;*/
+	/*height: 50%;*/
+	overflow-y: scroll;
+}
+}

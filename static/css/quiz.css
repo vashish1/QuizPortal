@@ -1,0 +1,204 @@
+.box {
+	overflow-y: scroll;
+}
+
+
+.quiz {
+	position: relative;
+	display: block;
+/*	position: relative;
+*/	background-color: #f2f2f2;
+	margin: 3% auto;
+	width: 50%;
+	padding: 2%;
+	color: #737373;
+	border-radius: 6px;
+	border:1px solid #737373;
+	text-align: center;
+}
+
+/*.about{
+	position: relative;
+	right:calc(50% - 50px);
+}
+
+.btn1 {
+	position: relative;
+	background-color: transparent;
+	border: none;
+	outline: none;
+}*/
+
+.btn1:hover {
+	color: #ff6600;
+}
+
+.info-1 .btn1 {
+	cursor: pointer;
+	outline: none;
+}
+
+/*
+.info {
+	position: absolute;
+	left: 13%;
+}
+
+.center .info-2 {
+	text-align: center;
+}
+
+
+.center .info {
+	float: right;
+}*/
+
+/*.info-1 button,.info-2 a{
+	position: relative;
+	display: inline;
+	text-decoration: none;
+	color:black;
+	font-size: 28px;
+	font-family: mntl;
+}*/
+
+.center {
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	border-top:2px solid #cdcdcd;
+	border-bottom: 2px solid #cdcdcd;
+	height: 75px;
+}
+
+.center a, .info-1 button, .info-2 p {
+	text-decoration: none; 
+    color: black; 
+    font-size: 28px;
+    font-family: mntl; 
+    text-transform: uppercase; 
+    background-color: transparent;
+    border: none;
+}
+
+h3 {
+	color: black;
+	margin-bottom: 3%;
+	text-align: center;
+	font-family: work sans;
+	font-weight: 500;
+}
+
+p {
+	font
+	margin-bottom: 3%;
+	color: #666666;
+}
+
+form {
+	position: relative;
+	text-align: center;
+	margin-top: 8%;
+	margin-bottom: 4%;
+}
+
+input {
+	width: 50%;
+	background-color: #cccccc;
+	border: solid 1px #cccccc;
+	padding: 1%;
+}
+
+.btn-secondary {
+	display: block;
+	background-color: #ff6600;
+	border-color: #ff6600;
+	margin: 1% auto 5% auto;
+	width: 24%;
+	font-family: work sans;
+	font-weight: 500;
+	font-size: 0.8em;
+	color: white;
+	padding: 1.5%;
+	border-radius: 0.25rem;
+	cursor: pointer;
+}
+
+.btn-secondary:hover {
+	background-color: #ff944d;
+}
+
+
+::placeholder {
+	color: #4d4d4d;
+	text-align: center;
+	font-family: work sans;
+	font-weight: 500;
+}
+
+input[type=text]:focus{
+  outline: 2px solid #cccccc;    
+}
+
+
+
+
+@media screen (max-width: 500px){
+	.quizzes {
+		overflow: hidden;
+		overflow-y: scroll;
+	}
+	.quiz {
+		/*width: 100%;*/
+		width: 70%;
+		margin-left: 15%;
+	}
+
+	.info-1 button, .info-1 a, .info-2 a, .info-2 p {
+		font-size: 20px;
+	}
+}
+
+
+@media screen and (min-width: 270px) and (max-width: 700px){
+	.quizzes {
+		overflow: hidden;
+		overflow-y: scroll;
+	}
+	.quiz {
+		/*width: 100%;*/
+		width: 90%;
+		margin: 3% auto;
+	}
+
+	.info-1 button, .info-1 a, .info-2 a, .info-2 p {
+		font-size: 20px;
+	}
+
+}
+
+@media(max-width: 500px){
+	.top button{
+	width:60px;
+	}
+
+	.info-1 button, .info-1 a, .info-2 a, .info-2 p {
+		font-size: 20px;
+	}
+
+	/*.info-1 {
+	position: absolute;
+	left: 75%;
+	
+	}
+
+	.info {
+		left: 15%;
+	}
+
+
+	.info-1 .btn1,.info-2 a, .info a{
+	font-size: 20px;
+	}	*/
+}

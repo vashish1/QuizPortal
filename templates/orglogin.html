@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Log In
+	</title>
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<link rel="stylesheet" type="text/css" href="{% static 'css\dashboard.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css\login.css' %}">
+	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+</head>
+<body>
+	<!-- {% if login %}
+		<script type="text/javascript">
+  		alert("Incorrect Username/Password 💔💔💔")
+		</script>
+	{% endif %} -->
+<div class="box">
+	<div class="top">
+		<img src="/static/img/mmil_logo.jpg" width="50px"><a href="/">MMIL</a>
+		<!-- {% if request.user.is_authenticated %}
+		<button onclick="logout()"class="button">Log Out</button>
+		{% else %}
+		<button class="log"onclick="login()">Log In</button>
+		<button onclick="signup()">Sign Up</button>
+		{% endif %} -->
+	</div>
+	<div class="center">
+		<div class="info-1">
+			<a href="/" class="">About</a>
+		</div>
+		<div class="info-1">
+			<a href='/events' class="">Live Events</a>
+		</div>	
+		<div class="info-1">
+			<a href='/contact' class="contact">contact</a>
+		</div>
+		<!-- <a href="#">About</a> -->
+	</div>
+	<div class="bottom">
+		<div class="signupbox">
+			<form method="POST">
+				
+				<h2 style="font-family: arca">ORGANISER SIGN IN</h2>
+				<input type="text" name="username" required="" placeholder="username">
+				<input type="password" name="password" required="" placeholder="password">
+				<input type="submit" name="submit" value="Submit">
+			</form>
+		</div>
+	</div>
+</div>
+<script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

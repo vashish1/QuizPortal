@@ -1,0 +1,113 @@
+@font-face{
+	font-family: arca;
+	src:url('/static/fonts/Arca.otf');
+}
+@font-face{
+	font-family: mntl;
+	src:url('/static/fonts/ntailu.ttf');
+}
+*{
+
+	margin:0 ;
+	padding: 0;
+	box-sizing: border-box;
+}
+html{
+	height: 100%;
+}
+body{
+	background-image: url('/static/img/orange.jpg');
+}
+.box{
+	background-image: url('/static/img/white_background_.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	position: absolute;
+	left:50%;
+	top: 50%;
+	color: black;
+	/*margin: 0 auto;*/
+	transform: translate(-50%,-50%);
+	width:85%;
+	height:95%;
+}
+.top{
+	margin:10px;
+}
+.top button{
+	font-family: arca;
+	font-weight: 600;
+	cursor: pointer;
+	float: right;
+	margin-top:20px;
+	margin-bottom:20px;
+	margin-right:10px;
+	width:75px;
+	border-radius: 10px;
+	border:none;
+	height: 25px;
+	outline: none;
+	background-image: linear-gradient(to top,rgba(255,127,80,1),rgba(255,127,80,.5));
+	text-transform: uppercase;
+	transition: 1s;
+}
+.top button:hover{
+	background-image: linear-gradient(to top,rgba(0,0,0,.7),rgba(0,0,0,.2));
+	color:white;
+	transform: translateY(-2px);
+}
+.center{
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	border-top:2px solid #cdcdcd;
+	border-bottom: 2px solid #cdcdcd;
+	height: 75px;
+}
+.info-1 a{
+	text-decoration: none;
+	color:black;
+	font-size: 28px;
+	font-family: arca;
+	text-transform:uppercase;
+}
+.info-1 a:hover{
+	color:#ff8533;
+}
+.box .top a{
+	position: absolute;
+	/*top:5px;*/
+	top:30px;
+	text-decoration: none;
+	color:black;
+	font-family: arca;
+}
+.info-1.active{
+	border-top:2px solid  red;
+	border-bottom:2px solid  red;
+	color:red;
+}
+@media(max-width: 500px){
+	.top button{
+		width:60px;
+		font-size: 10px;
+}
+	.info-1 a{
+		font-size: 13px;
+}
+.box{
+		overflow-y: scroll;
+	}
+}
+
+
+
+
+
+
+
+
+
+

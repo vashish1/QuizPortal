@@ -1,0 +1,111 @@
+package database
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
+
+//Createdb creates a database
+func Createdb() (*mongo.Collection, *mongo.Collection, *mongo.Client) {
+
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+
+	// Connect to MongoDB
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Check the connection
+	err = client.Ping(context.TODO(), nil)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Connected to MongoDB!")
+	usercollection := client.Database("Quiz").Collection("User")
+	organizercollection := client.Database("Quiz").Collection("organizer")
+	return usercollection, organizercollection, client
+}
+
+//Insertintouserdb inserts the data into the database
+func Insertintouserdb(usercollection *mongo.Collection, u User) {
+
+	fmt.Println(u.Username)
+	insertResult, err := usercollection.InsertOne(context.TODO(), u)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
+}
+
+//Findfromuserdb finds the required data
+func Findfromuserdb(usercollection *mongo.Collection, st string) (bool) {
+	filter := bson.D{primitive.E{Key: "username", Value: st}}
+	var result User
+
+	err := usercollection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+	return true
+}
+
+//Insertintoorganizerdb inserts the data into the database
+func Insertintoorganizerdb(usercollection *mongo.Collection, u Organizer) {
+
+	insertResult, err := usercollection.InsertOne(context.TODO(), u)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
+}
+
+//Findfromorganizerdb finds the required data
+func Findfromorganizerdb(organizercollection *mongo.Collection, st string) bool {
+	filter := bson.D{primitive.E{Key: "username", Value: st}}
+	var result Organizer
+
+	err := organizercollection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if result.PasswordHash != "" {
+		return true
+	}
+
+	return false
+
+}
+
+// err = client.Disconnect(context.TODO())
+
+// if err != nil {
+// 	log.Fatal(err)
+// }
+// fmt.Println("Connection to MongoDB closed.")
+
+//Finddb finds the required database
+func Finddb(c *mongo.Collection,s string) (User){
+	filter := bson.D{primitive.E{Key: "username", Value: s}}
+	var result User
+
+	err := c.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+		return result
+	}
+	return result
+}

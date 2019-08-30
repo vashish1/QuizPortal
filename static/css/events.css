@@ -1,0 +1,158 @@
+/*.event{
+	position: relative;
+	left:13%;	
+}
+
+.about{
+	position: absolute;
+	right:calc(50% - 50px);
+	
+}
+*/
+@font-face{
+	font-family: arca;
+	src:url('/static/fonts/Arca.otf');
+}
+@font-face{
+	font-family: mntl;
+	src:url('/static/fonts/ntailu.ttf');
+}
+.box{
+	overflow-y: scroll;
+}
+.events {
+	position: relative;
+	display: block;
+	background-color: white;
+	margin: 3% auto 0 auto;
+	width: 30%;
+	padding: 1%;
+	color: black;
+	border-radius: 6px;
+	border:1px solid #cccccc;
+	box-shadow: 0 0 5px #ff8533;
+	text-align: center;
+	transition:1s;
+}
+.events:hover{
+	transform:translateY(5px);
+}
+
+.list {
+	width: 100%;
+	display: block;
+	margin: 25px auto;
+}
+
+i {
+	width: 3px;
+	height: 3px;
+	color: black;
+	left: 2%;
+	padding-right: 6%;
+}
+
+.header {
+	color:black;
+	margin-bottom: 2%;
+	font-family: mntl;
+	font-weight: 500;
+	font-size: 120%;
+}
+
+.btn-secondary {
+	background-color: #ff6600;
+	border-color: #ff6600;
+	margin: 4% auto;
+	/*margin-left: 25%;*/
+	width: 50%;
+	font-family: mntl;
+	font-weight: 500;
+	font-size: 0.8em;
+	color: white;
+	/*margin-top: 4%;
+	margin-bottom: 4%;*/
+	padding: 3%;
+	border-radius: 0.25rem;
+}
+
+.btn-secondary:hover {
+	background-color: #ff944d;
+}
+
+span .new {
+	/*margin-left: 6%;*/
+	margin: 0 auto;
+}
+
+p {
+	margin-bottom: 2%;
+}
+
+.links:hover {
+	color:#ff6600;
+	cursor: pointer;
+}
+
+
+.box .top a{
+	position: absolute;
+	/*top:5px;*/
+	top:30px;
+	text-decoration: none;
+	color:black;
+	/*vertical-align: text-top;*/
+	font-family: arca;
+}
+/*.box{
+		overflow-y: scroll;
+}
+*/
+input[type="submit"]{
+	font-family: arca;
+	font-weight: 600;
+	cursor: pointer;
+	margin-top:20px;
+	width:75px;
+	border-radius: 10px;
+	border:none;
+	height: 25px;
+	outline: none;
+	background-image: linear-gradient(to top,rgba(255,127,80,1),rgba(255,127,80,.5));
+	text-transform: uppercase;
+}
+
+@media (max-width: 500px){
+	.list {
+		overflow: hidden;
+		overflow-y: scroll;
+	}
+	.events {
+		width: 90%;
+		margin-left: 5%;
+	}
+
+
+}
+
+@media screen and (min-width: 200px) and (max-width: 768px){
+	.list {
+		overflow: hidden;
+		overflow-y: scroll;
+	}
+	.events {
+		width: 80%;
+		margin: 3% auto;
+	}
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px){
+	.list {
+		overflow: hidden;
+		overflow-y: scroll;
+	}
+	.events {
+		width: 50%;
+		margin: 3% auto;
+	}
+}
