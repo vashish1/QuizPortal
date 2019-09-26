@@ -12,7 +12,7 @@ import (
 )
 
 //Createdb creates a database
-func Createdb() (*mongo.Collection, *mongo.Collection, *mongo.Client) {
+func Createdb() (*mongo.Collection, *mongo.Collection, *mongo.Collection, *mongo.Client) {
 
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
@@ -33,7 +33,8 @@ func Createdb() (*mongo.Collection, *mongo.Collection, *mongo.Client) {
 	fmt.Println("Connected to MongoDB!")
 	usercollection := client.Database("Quiz").Collection("User")
 	organizercollection := client.Database("Quiz").Collection("organizer")
-	return usercollection, organizercollection, client
+	eventcollection := client.Database("Quiz").Collection("event")
+	return usercollection, organizercollection,eventcollection, client
 }
 
 //Insertintouserdb inserts the data into the database
@@ -49,7 +50,7 @@ func Insertintouserdb(usercollection *mongo.Collection, u User) {
 }
 
 //Findfromuserdb finds the required data
-func Findfromuserdb(usercollection *mongo.Collection, st string) (bool) {
+func Findfromuserdb(usercollection *mongo.Collection, st string) bool {
 	filter := bson.D{primitive.E{Key: "username", Value: st}}
 	var result User
 
@@ -98,7 +99,7 @@ func Findfromorganizerdb(organizercollection *mongo.Collection, st string) bool 
 // fmt.Println("Connection to MongoDB closed.")
 
 //Finddb finds the required database
-func Finddb(c *mongo.Collection,s string) (User){
+func Finddb(c *mongo.Collection, s string) User {
 	filter := bson.D{primitive.E{Key: "username", Value: s}}
 	var result User
 

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,109 +6,46 @@
 	</title>
 	<meta content="width=device-width, initial-scale=1" name="viewport" />
 	<!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
-	<link rel="stylesheet" type="text/css" href="{% static 'css\dashboard.css' %}">
+	<link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
 	<!-- <link rel="stylesheet" type="text/css" href="{% static 'css\login.css' %}"> -->
-	<link rel="stylesheet" type="text/css" href="{% static 'css\events.css' %}">
+	<link rel="stylesheet" type="text/css" href="/static/css/events.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 	<link href="https://fonts.googleapis.com/css?family=Work+Sans:500&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="box">
-	<div class="top">
-		<img src="/static/img/mmil_logo.jpg" width="50px"><a href="/">MMIL</a>
-		{{if request.user.is_authenticated }}
-		<button onclick="logout()"class="button">Log Out</button>
-		{{} else }}
-		<button onclick="login()">Log In</button>
-		<button onclick="signup()">Sign Up</button>
-		{{end }}
-	</div>
-	<div class="center">
-		{{ if organiser }}
-		<div class="info-1">
-			<a href='/organiser' class="event">Dashboard</a>
-		</div>
-		{{ else }}
-		<div class="info-1">
-			<a href='/' class="event">About</a>
-		</div>
-		{{ end }}
-		<div class="info-1 active">
-			<a href="/events" class="about">Live Events</a>
-		</div>	
-		<div class="info-1">
-			<a href='/contact' class="contact">contact</a>
-		</div>
-	</div>
-	<div class="list">
-	{{ for i in eve }}	
-	<div class="events">
-		<div class="header">{{ i.event_name }}</div>
-		<p>{{ i.event_description }}</p>
-		{% if i.event_start_date == now_d and now >= i.event_start_time|time:"H:i" and i.event_end_date == now_d and now <= i.event_end_time|time:"H:i" %}
-			<p>Live till {{ i.event_end_date }} {{ i.event_end_time|time:"H:i" }}</p>
-		<form method="POST" action="/quiz/">
-			{% csrf_token %}
-			<div>
-				<input type="hidden" name="event_name" value="{{ i.event_name }}">
-				{% if organiser %}
-				<p><b>Log in as a Participant to Join</b></p>
-				{% else %}
-				<input type="submit" name="nothing" value="Join Now">
-				{% endif %}
-			</div>
-		</form>
-		{% elif i.event_start_date < now_d and now_d < i.event_end_date %}		
-			<p>Live till {{ i.event_end_date }} {{ i.event_end_time|time:"H:i" }}</p>
-		<form method="POST" action="/quiz/">
-			{% csrf_token %}
-			<div>
-				<input type="hidden" name="event_name" value="{{ i.event_name }}">
-				{% if organiser %}
-				<p><b>Log in as a Participant to Join</b></p>
-				{% else %}
-				<input type="submit" name="nothing" value="Join Now">
-				{% endif %}
-			</div>
-		</form>
-		{% elif i.event_start_date < now_d and now_d == i.event_end_date and now <= i.event_end_time|time:"H:i" %}		
-			<p>Live till {{ i.event_end_date }} {{ i.event_end_time|time:"H:i" }}</p>
-		<form method="POST" action="/quiz/">
-			{% csrf_token %}
-			<div>
-				<input type="hidden" name="event_name" value="{{ i.event_name }}">
-				{% if organiser %}
-				<p><b>Log in as a Participant to Join</b></p>
-				{% else %}
-				<input type="submit" name="nothing" value="Join Now">
-				{% endif %}
-			</div>
-		</form>
-		{% elif i.event_start_date == now_d and now_d < i.event_end_date and now >= i.event_start_time|time:"H:i" %}		
-			<p>Live till {{ i.event_end_date }} {{ i.event_end_time|time:"H:i" }}</p>
-		<form method="POST" action="/quiz/">
-			{% csrf_token %}
-			<div>
-				<input type="hidden" name="event_name" value="{{ i.event_name }}">
-				{% if organiser %}
-				<p><b>Log in as a Participant to Join</b></p>
-				{% else %}
-				<input type="submit" name="nothing" value="Join Now">
-				{% endif %}
-			</div>
-		</form>
-		{% elif i.event_start_date > now_d %}
-			<p>Will be Live Soon</p>
-		{% elif i.event_end_time|time:"H:i" > now and i.event_start_date == now_d %}
-			<p>Will be Live Soon</p>
-		{% else %}
-			<p>Event Expired</p>
-		{% endif %}
-	</div>
-	{% endfor %}
-</div>
-</div>
-
-<script src="{% static 'js/app.js' %}"></script>
-</body>
-</html>
+    <div class="box">
+        <div class="top">
+            <img src="/static/img/mmil_logo.jpg" width="50px"><a href="/">MMIL</a>
+            <button onclick="login()">Log In</button>
+            <button onclick="signup()">Sign Up</button>
+        </div>
+        <div class="list">
+        {{range .Elist}}
+            <div class="events">
+                <div class="header">{{.Eventsname}}</div>
+                <p>{{.Eventdescription}}</p>
+		{{ if and (eq .Eventstartdate .Datenow) (ge .Timenow .Eventstartdate)}}
+        <p>Live till {{ .Eventenddate }} {{.Eventendtime}}</p>
+        {{end}}
+        <form method="POST" action="/QuizPortal/events/"></form>
+        {{end}}
+        </div>
+        </div>
+        
+        <script src="/static/js/app.js"></script>
+        </body>
+        </html>    
+<!-- <!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>check the events list</title>
+    </head>
+    <body>
+        <h1>{{.Index}}</h1>
+        {{range .Elist}}
+         <p>{{.}}</p>
+         {{end}}
+         
+    </body>
+</html> -->

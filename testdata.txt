@@ -1,0 +1,9 @@
+slice of events
+structure of events- events_name
+                   -event_description
+                   -event_start_date
+                   -time.now
+                   -event_start_time
+                   -event_end_date
+                   -event_end_time
+                   

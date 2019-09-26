@@ -2,16 +2,16 @@ function signup() {
 	// body...
 	// var sign=document.querySelector('.signinn');
 	// sign.style.background= 'linear-gradient(to top,rgba(0,0,80,1),rgba(255,127,80,.5))';
-	location.href='/signup';
+	location.href="/QuizPortal/signup";
 }
 function login() {
 	// body...
-	location.href='/login';
+	location.href="/QuizPortal/login";
 }
 
 function logout() {
 	// body...
-	location.href='/logout';
+	location.href="/QuizPortal/logout";
 }
 
 //function swap() {
@@ -20,7 +20,7 @@ function logout() {
 //  text: "Once deleted, you will not be able to recover this event!",
 //  icon: "warning",
 //  buttons: true,
-//  dangerMode: true,
+//  dangerMode: true, 
 //})
 //.then((willDelete) => {
 //  if (willDelete) {

@@ -2,6 +2,7 @@ package authenticate
 
 import (
 	"QuizPortal/database"
+	"fmt"
 	"net/http"
 
 	"time"
@@ -75,4 +76,30 @@ func init() {
 	blockKey = securecookie.GenerateRandomKey(32)
 
 	s = securecookie.New(hashKey, blockKey)
+}
+
+//Values ....
+type Values map[string]string
+
+//Getcookievalues ....
+func Getcookievalues(w http.ResponseWriter, r *http.Request) Values {
+	c, err := r.Cookie("session")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			// If the cookie is not set, return an unauthorized status
+			w.WriteHeader(http.StatusUnauthorized)
+			return Values{}
+		}
+		// For any other type of error, return a bad request status
+		w.WriteHeader(http.StatusBadRequest)
+		return Values{}
+	}
+	var value Values
+
+	er := s.Decode("session", c.Value, &value)
+	// if er == nil {
+	// 	fmt.println(w, value)
+	// }
+	fmt.Print(er)
+	return value
 }
