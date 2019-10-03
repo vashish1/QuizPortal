@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 )
+var i int=0
 
 //User ......
 type User struct {
@@ -56,4 +57,16 @@ type Organizer struct {
 	PasswordHash      string
 	Timestampcreated  int64
 	Timestampmodified int64
+}
+//NewEvent ........
+func NewEvent(a string,b string,c string,d string,e string,f string ) (Event){
+	var eve Event
+	eve.I=i
+	eve.Eventsname=a
+	eve.Eventdescription=b
+	start:=c+" "+e
+	end:=d+" "+f
+	eve.Timenow=time.Now()
+	eve.Starttime,_=time.Parse("03-08-2009 00:00",start)
+	eve.Endtime,_=time.Parse("03-08-2009 00:00",end)
 }

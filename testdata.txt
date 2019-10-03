@@ -7,3 +7,5 @@ structure of events- events_name
                    -event_end_date
                    -event_end_time
                    
+a function to check if the user is organizer or participant
+a function to check if the user is authenticated( to check if the session is available or not)

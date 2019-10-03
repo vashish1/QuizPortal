@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		QuizPortal
+	</title>
+	<script
+	  src="https://code.jquery.com/jquery-3.4.1.min.js"
+	  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+	  crossorigin="anonymous">
+	  	
+	</script>
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/OrgDashboard.css">
+	<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+</head>
+<body>
+        <div class="box">
+                <div class="top">
+                    <img src="/static/img/mmil_logo.jpg" width="50px"><a href="/">MMIL</a>
+                    {% if request.user.is_authenticated %}
+                    <button onclick="logout()"class="button">Log Out</button>
+                    {% else %}
+                    <button onclick="login()">Log In</button>
+                    <button onclick="signup()">Sign Up</button>
+                    {% endif %}
+                </div>
+                <div class="center">
+                    <div class="info-1">
+                        <a href="/events" class="about">Live Events</a>
+                    </div>
+                    <div class="info-1 active">
+                        <a href='#' class="event">Your Events</a>
+                    </div>	
+                    <div class="info-1">
+                        <a href='/contact' class="contact">contact</a>
+                    </div>
+                    <!-- <a href="#">About</a> -->
+                </div>
+                <div class="bottom">
+                    <div class="container">
+            
+                    <!-- <div class="leaderboard"> -->
+                    {% for i in event %}
+                    <div class="block">
+                        <div class="innerblock" title="Event Name">{{ i.event_name }}</div>
+                        <div class="innerblock" title="Event Start Date">{{ i.event_start_date }}</div>
+                        <div class="innerblock" title="Event End Date">{{ i.event_end_date }}</div>
+                        <div class="innerblock" title="Event Start Time">{{ i.event_start_time|time:"H:i" }}</div>
+                        <div class="innerblock" title="Event End Time">{{ i.event_end_time|time:"H:i" }}</div>
+                        <div class="innerblock">
+                            <form method="POST" action="/update/">
+                            {% csrf_token %}
+                                <input type="hidden" name="eventname" value="{{ i.event_name }}" />
+                                <button type="submit" class="icon1"><i class="fa fa-edit" title="Add Questions"></i></button>
+                            </form>
+            
+                        </div>
+                        <div  class="btn-delete" class="innerblock">
+                            <form method="POST" action="/deleteEvent/">
+                            {% csrf_token %}
+                                <input type="hidden" name="eventname" value="{{ i.event_name }}" />
+                                <button id="{{ i.event_name }}" type="submit" class="icon2"><i class="fa fa-times" aria-hidden="true" title="Delete"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                    <a href="/addEvent" class="icon3"><i class="fa fa-plus-circle size" aria-hidden="true" title="Add Event"></i></a>
+                </div>
+            
+            </div>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script src="{% static 'js\app.js' %}"></script>
+            

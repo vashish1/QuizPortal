@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Quizzes
+	</title>
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+	<link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/login.css">
+	<!-- <link rel="stylesheet" type="text/css" href="events.css"> -->
+	<link rel="stylesheet" type="text/css" href="/static/css/quiz.css">
+	<link href="https://fonts.googleapis.com/css?family=Work+Sans:500&display=swap" rel="stylesheet">
+	</head>
+<body>
+<div class="box">
+	<div class="top">
+		<img src="/static/img/mmil_logo.jpg" width="50px"><a href="dashboard.html">MMIL</a>
+		{{if .Checksession}}
+		<button class="button" onclick="logout()">Log Out</button>
+		{{ else }}
+		<button onclick="login()">Log In</button>
+		<button class="signn" onclick="signup()">Sign Up</button>
+		{{ end}}
+	</div>
+	<div class="center">
+		<div class="info-1">
+		<a href="/QuizPortal/events" class="about">Live Events</a>
+		</div>
+		<div class="info-2">
+			<p class="about">{{ .Eventsname }}</p>
+		</div>	
+		<div class="info-1">
+			<form method="POST" action="/QuizPortal/leaderboard">
+				
+				<input type="hidden" name="event_name" value="{{ .Eventsname }}">
+				<button type="submit" class="btn1">LEADERBOARD</button>
+			</form></div>
+		<!-- <a href="#">About</a> -->
+	</div>
+	<div class="quizzes">
+		<div class="quiz">
+			<h3>{{ .Q.Title } }</h3>
+			<p>{{ .Q.Description }}</p>
+			<form method="POST">
+				
+				<input type="text" name="answer" required="" placeholder="Your response">
+				<input type="hidden" name="eventname" value="{{.Eventsname}}">
+				<button type="submit" class="btn btn-secondary">Submit</button>
+			</form>
+		</div>
+	</div>
+</div>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

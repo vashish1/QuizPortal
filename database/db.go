@@ -12,7 +12,7 @@ import (
 )
 
 //Createdb creates a database
-func Createdb() (*mongo.Collection, *mongo.Collection, *mongo.Collection, *mongo.Client) {
+func Createdb() (*mongo.Collection, *mongo.Collection, *mongo.Collection, *mongo.Collection, *mongo.Client) {
 
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
@@ -34,7 +34,8 @@ func Createdb() (*mongo.Collection, *mongo.Collection, *mongo.Collection, *mongo
 	usercollection := client.Database("Quiz").Collection("User")
 	organizercollection := client.Database("Quiz").Collection("organizer")
 	eventcollection := client.Database("Quiz").Collection("event")
-	return usercollection, organizercollection,eventcollection, client
+	quizcollection:=client.Database("Quiz").Collection("quiz")
+	return usercollection, organizercollection, eventcollection,quizcollection, client
 }
 
 //Insertintouserdb inserts the data into the database
@@ -105,7 +106,18 @@ func Finddb(c *mongo.Collection, s string) User {
 
 	err := c.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
-		log.Fatal(err)
+		return result
+	}
+	return result
+}
+
+//Findorgdb finds the required database
+func Findorgdb(c *mongo.Collection, s string) Organizer {
+	filter := bson.D{primitive.E{Key: "username", Value: s}}
+	var result Organizer
+
+	err := c.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
 		return result
 	}
 	return result

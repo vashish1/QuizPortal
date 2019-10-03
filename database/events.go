@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"time"
 )
 
 //Event contains the data for events.
@@ -17,12 +17,9 @@ type Event struct {
 	I                int
 	Eventsname       string
 	Eventdescription string
-	Eventstartdate   string
-	Timenow          string
-	Eventstarttime   string
-	Eventenddate     string
-	Eventendtime     string
-	Datenow          string
+	Startdate        time.Time
+	Enddate          time.Time
+	Timenow          time.Time
 }
 
 //Insertintoeventdb inserts the data into the database
@@ -47,7 +44,7 @@ func Findfromeventdb(collection *mongo.Collection) []Event {
 	// Passing bson.D{{}} as the filter matches all documents in the collection
 	cur, err := collection.Find(context.TODO(), bson.D{{}}, findOptions)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("the error is:", err)
 	}
 
 	// Finding multiple documents returns a cursor
@@ -58,20 +55,20 @@ func Findfromeventdb(collection *mongo.Collection) []Event {
 		var elem Event
 		err := cur.Decode(&elem)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("decoding error:", err)
 		}
 
 		results = append(results, elem)
 	}
 
 	if err := cur.Err(); err != nil {
-		log.Fatal(err)
+		log.Fatal("cursor error", err)
 	}
 
 	// Close the cursor once finished
 	cur.Close(context.TODO())
 
-	fmt.Printf("Found multiple documents (array of pointers): %+v\n", results)
+	// fmt.Printf("Found multiple documents (array of pointers): %+v\n")
 	return results
 }
 

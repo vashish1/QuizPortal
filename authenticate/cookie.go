@@ -38,6 +38,30 @@ func CreateSecureCookie(u database.User, sessionID string, w http.ResponseWriter
 	return nil
 
 }
+//CreateSecureorgCookie .....
+func CreateSecureorgCookie(u database.Organizer, sessionID string, w http.ResponseWriter, r *http.Request) error {
+
+	value := map[string]string{
+		"username": u.Username,
+		"sid":      sessionID,
+	}
+
+	if encoded, err := s.Encode("session", value); err == nil {
+		cookie := &http.Cookie{
+			Name:     "session",
+			Value:    encoded,
+			Path:     "/",
+			Secure:   false,
+			HttpOnly: true,
+		}
+		http.SetCookie(w, cookie)
+	} else {
+		return err
+	}
+
+	return nil
+
+}
 
 //ReadSecureCookieValues ....
 func ReadSecureCookieValues(w http.ResponseWriter, r *http.Request) (map[string]string, error) {
@@ -103,3 +127,5 @@ func Getcookievalues(w http.ResponseWriter, r *http.Request) Values {
 	fmt.Print(er)
 	return value
 }
+
+
