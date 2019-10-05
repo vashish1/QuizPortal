@@ -44,17 +44,17 @@
                     <div class="container">
             
                     <!-- <div class="leaderboard"> -->
-                     {{range .Elist}}
+                     {{range .List}}
                     <div class="block">
-                        <div class="innerblock" title="Event Name">{{ .eventname }}</div>
-                        <div class="innerblock" title="Event Start Date">{{ .event_start_date }}</div>
-                        <div class="innerblock" title="Event End Date">{{ i.event_end_date }}</div>
-                        <div class="innerblock" title="Event Start Time">{{ i.event_start_time|time:"H:i" }}</div>
-                        <div class="innerblock" title="Event End Time">{{ i.event_end_time|time:"H:i" }}</div>
+                        <div class="innerblock" title="Event Name">{{ .Eventsname }}</div>
+                        <div class="innerblock" title="Event Start Date">{{ .Startdate }}</div>
+                        <div class="innerblock" title="Event End Date">{{ .Enddate }}</div>
+                        <div class="innerblock" title="Event Start Time">{{ .Stime }}</div>
+                        <div class="innerblock" title="Event End Time">{{ .Etime }}</div>
                         <div class="innerblock">
                             <form method="POST" action="/update/">
                             
-                                <input type="hidden" name="eventname" value="{{ .eventname }}" />
+                                <input type="hidden" name="eventname" value="{{ .Eventsname }}" />
                                 <button type="submit" class="icon1"><i class="fa fa-edit" title="Add Questions"></i></button>
                             </form>
             
@@ -63,8 +63,8 @@
                             <form method="POST" action="/deleteEvent/">
                            
 
-                                <input type="hidden" name="eventname" value="{{ i.event_name }}" />
-                                <button id="{{ i.event_name }}" type="submit" class="icon2"><i class="fa fa-times" aria-hidden="true" title="Delete"></i></button>
+                                <input type="hidden" name="eventname" value="{{ .Eventsname }}" />
+                                <button id="{{ .Eventsname }}" type="submit" class="icon2"><i class="fa fa-times" aria-hidden="true" title="Delete"></i></button>
                             </form>
                         </div>
                     </div>

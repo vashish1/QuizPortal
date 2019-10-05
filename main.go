@@ -39,6 +39,14 @@ type Quiz struct {
 	Q         database.Quizz
 }
 
+//Myevents stores the events of a particular organizer
+type Myevents struct {
+	res  http.ResponseWriter
+	req  *http.Request
+	username string
+	List []database.Event
+}
+
 func main() {
 	r := NewRouter()
 
@@ -308,6 +316,15 @@ func (e Events) Checksession() bool {
 	return false
 }
 
+//Checksession checks  if session is present or not
+func (e Myevents) Checksession() bool {
+	res, err := authenticate.ReadSecureCookieValues(e.res, e.req)
+	if res != nil && err == nil {
+		return true
+	}
+	return false
+}
+
 //Usertype defines thetype of user
 func (e Events) Usertype() string {
 	res, err := authenticate.ReadSecureCookieValues(e.res, e.req)
@@ -375,7 +392,29 @@ func rendertemplate(w http.ResponseWriter, name string, data interface{}) {
 	}
 }
 
-func orgdashboard(w http.ResponseWriter,r *http.Request){
+func orgdashboard(w http.ResponseWriter, r *http.Request) {
 
+}
+
+func findusername(w http.ResponseWriter, r *http.Request) string{
 	
+	res, err := authenticate.ReadSecureCookieValues(w,r)
+	if err != nil {
+		
+		fmt.Println("the error while finding username:",err)
+	}
+	st := res["username"]
+		return st
+}
+
+func findorgevents(s string) []database.Event{
+var result []database.Event
+org:=database.Findorgdb(cl2,s)
+var i int
+for i=0;i<len(org.Events);i++ {
+	eve:=org.Events[i]
+	e:=database.Findevent(cl2,eve)
+	result=append(result,e)
+}
+return result
 }

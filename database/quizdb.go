@@ -36,13 +36,11 @@ func Findfromquizdb(collection *mongo.Collection, st string) []Quizz {
 	findOptions := options.Find()
 	fmt.Println("st:", st)
 
-	filter := bson.D{primitive.E{Key: "event", Value: st}}
-
 	// Here's an array in which you can store the decoded documents
 	var results []Quizz
 
 	// Passing bson.D{{}} as the filter matches all documents in the collection
-	cur, err := collection.Find(context.TODO(), filter, findOptions)
+	cur, err := collection.Find(context.TODO(), bson.D{{"event", st}}, findOptions)
 	if err != nil {
 		log.Fatal("the error is:", err)
 	}
@@ -79,6 +77,11 @@ func Deletequiz(collection *mongo.Collection, st string) {
 
 	filter := bson.D{primitive.E{Key: "title", Value: st}}
 	deleteResult, err := collection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
+}
 	if err != nil {
 		log.Fatal(err)
 	}

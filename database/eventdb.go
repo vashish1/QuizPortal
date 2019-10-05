@@ -34,6 +34,18 @@ func Insertintoeventdb(usercollection *mongo.Collection, e Event) {
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
 }
 
+//Findevent finds the event  in the database
+func Findevent(collection *mongo.Collection, st string) Event{
+	filter := bson.D{primitive.E{Key: "eventsname", Value: st}}
+	var result Event
+
+	err := c.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		return result
+	}
+	return result
+}
+
 //Findfromeventdb finds the required data
 func Findfromeventdb(collection *mongo.Collection) []Event {
 	// Pass these options to the Find method
@@ -79,13 +91,6 @@ func Deleteevent(collection *mongo.Collection, st string) {
 	filter := bson.D{primitive.E{Key: "eventsname", Value: st}}
 	deleteResult, err := collection.DeleteOne(context.TODO(), filter)
 	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
-}
-}
-	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
-}
 		log.Fatal(err)
 	}
 	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)

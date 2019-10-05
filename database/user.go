@@ -68,10 +68,6 @@ func NewEvent(a string, b string, c string, d string, e string, f string) Event 
 	eve.I = i
 	eve.Eventsname = a
 	eve.Eventdescription = b
-	eve.Startdate=c
-	eve.Enddate=e
-	eve.stime=d
-	eve.etime=f
 	start := c + " at " + d
 	end := e + " at " + f
 	fmt.Println(start, end)
@@ -94,3 +90,8 @@ func (e Event) After() bool {
 func (e Event) Before() bool {
 	return e.Starttime.Before(e.Timenow)
 }
+//Before ....
+func (e Event) Before() bool {
+	return e.Starttime.Before(e.Timenow)
+}
+

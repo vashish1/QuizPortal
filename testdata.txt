@@ -63,5 +63,15 @@ a function to check if the user is authenticated( to check if the session is ava
 {{end}} -->
 
 
+// //Findevent finds the event  in the database
+// func Findevent(collection *mongo.Collection, st string) Event{
+// 	filter := bson.D{primitive.E{Key: "eventsname", Value: st}}
+// 	var result Event
 
+// 	err := c.FindOne(context.TODO(), filter).Decode(&result)
+// 	if err != nil {
+// 		return result
+// 	}
+// 	return result
+// }
 

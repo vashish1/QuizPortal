@@ -55,8 +55,11 @@
 
                           </div>
                          </form>
-                {{}}
-                      {{end}}   
+                {{else if not (.Before) }}
+                <p>Will be Live Soon</p>
+                {{ else}}
+                <p>Event Expired</p>
+                 {{end}}   
                 </div>
             {{end}}
         </div>
