@@ -52,7 +52,7 @@
                         <div class="innerblock" title="Event Start Time">{{ .Stime }}</div>
                         <div class="innerblock" title="Event End Time">{{ .Etime }}</div>
                         <div class="innerblock">
-                            <form method="POST" action="/update/">
+                            <form method="POST" action="/QuizPortal/update/">
                             
                                 <input type="hidden" name="eventname" value="{{ .Eventsname }}" />
                                 <button type="submit" class="icon1"><i class="fa fa-edit" title="Add Questions"></i></button>
@@ -60,7 +60,7 @@
             
                         </div>
                         <div  class="btn-delete" class="innerblock">
-                            <form method="POST" action="/deleteEvent/">
+                            <form method="POST" action="/QuizPortal/deleteEvent/">
                            
 
                                 <input type="hidden" name="eventname" value="{{ .Eventsname }}" />
@@ -70,7 +70,7 @@
                     </div>
                     {{end}}
                     </div>
-                    <a href="/addEvent" class="icon3"><i class="fa fa-plus-circle size" aria-hidden="true" title="Add Event"></i></a>
+                    <a href="/QuizPortal/addEvent" class="icon3"><i class="fa fa-plus-circle size" aria-hidden="true" title="Add Event"></i></a>
                 </div>
             
             </div>

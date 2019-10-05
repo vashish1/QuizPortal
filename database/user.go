@@ -90,8 +90,3 @@ func (e Event) After() bool {
 func (e Event) Before() bool {
 	return e.Starttime.Before(e.Timenow)
 }
-//Before ....
-func (e Event) Before() bool {
-	return e.Starttime.Before(e.Timenow)
-}
-

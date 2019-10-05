@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		SignUp
+	</title>
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/addevent.css">
+</head>
+<body>
+	<!-- {% if error %}
+		<script type="text/javascript">
+			alert("Some Error has Occurred !!")
+		</script>
+	{% endif %}
+	{% if bool %}
+		<script type="text/javascript">
+			alert("Add Event First !!")
+		</script>
+	{% endif %} -->
+<div class="box">
+	<div class="top">
+		<img src="/static/img/mmil_logo.jpg" width="50px"><a href="/">MMIL</a>
+		{{if .Checksession}} 
+            <button onclick="logout()"class="button">Log Out</button>
+            {{else}}
+            <button onclick="login()">Log In</button>
+            <button onclick="signup()">Sign Up</button>
+            {{end}}
+	</div>
+	<div class="center">
+		{{ if eq .Usertype "organiser" }}
+		<div class="info-1">
+			<a href='/QuizPortal/organiser/dashboard' class="event">Dashboard</a>
+		</div>
+		{{else}}
+		<div class="info-1">
+			<a href='/QuizPortal' class="event">About</a>
+		</div>
+		{{ end}}
+		<div class="info-1">
+			<a href='/QuizPortal/events' class="">Live Events</a>
+		</div>	
+		<div class="info-1">
+			<a href='/QuizPortal/contact' class="contact">contact</a>
+		</div>
+		
+	</div>
+
+	<div class="bottom">
+		<div class="addevent">
+			<form method="POST">
+			
+			<div class="info">
+				<label>Name of Event:</label>
+				<input type="text" name="name" required="" />
+			</div>
+			<div class="info">
+				<label class="up">Description of Event:</label>
+				<textarea name="description"></textarea>
+			</div>
+			<div class="info">
+				<label>Starting Date: </label>
+				<input type="Date" name="startdate" required="" />
+			</div>
+			<div class="info">
+				<label>Ending Date:</label>
+				<input type="Date" name="enddate" required="" />
+			</div>
+			<div class="info">
+				<label>Starting time:</label>
+				<input type="time" name="starttime" required=""/>
+			</div>
+			<div class="info">
+				<label>Ending time:</label>
+				<input type="time" name="endtime" required=""/>
+			</div>
+				<input type="submit" name="submit" value="Submit">
+			</form>	
+		</div>
+	</div>
+</div>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -75,3 +75,8 @@ a function to check if the user is authenticated( to check if the session is ava
 // 	return result
 // }
 
+
+
+
+
+Event added template
