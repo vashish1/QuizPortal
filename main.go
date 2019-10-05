@@ -12,13 +12,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var cl1, cl2, cl3,cl4  *mongo.Collection
+var cl1, cl2, cl3, cl4 *mongo.Collection
 var c *mongo.Client
-var e database.Event
 var eve Events
-var org database.Organizer
+var e empty
 
-type functions interface {
+type empty struct {
+	res http.ResponseWriter
+	req *http.Request
 }
 
 //Events ....
@@ -45,6 +46,7 @@ func main() {
 	r.HandleFunc("/QuizPortal/signup", signuphandler).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/login", loginhandler).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/organizer", organizerhandler).Methods("GET", "POST")
+	r.HandleFunc("/QuizPortal/organizer/dashboard", orgdashboard).Methods("GET")
 	r.HandleFunc("/QuizPortal/login/dashboard", dashboard).Methods("GET")
 	r.HandleFunc("/QuizPortal/contact", Contacthandler)
 	r.HandleFunc("/QuizPortal/events", eventhandler).Methods("GET", "POST")
@@ -136,6 +138,11 @@ func loginhandler(w http.ResponseWriter, r *http.Request) {
 
 func organizerhandler(w http.ResponseWriter, r *http.Request) {
 
+	e = empty{
+		res: w,
+		req: r,
+	}
+
 	switch r.Method {
 
 	case "GET":
@@ -146,7 +153,7 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Fatal("Could not parse template files\n")
 			}
-			er := t.Execute(w, "")
+			er := t.Execute(w, e)
 			if er != nil {
 				log.Fatal("could not execute the files\n")
 			}
@@ -169,19 +176,20 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 
 func quizhandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("quiz chlra hai")
-	name := r.FormValue("eventname")
-	Qlist := database.Findfromquizdb(cl3, name)
+	re := r.FormValue("eventname")
+	fmt.Println("eventname:", re)
+	Qlist := database.Findfromquizdb(cl4, re)
 	qu := Quiz{
 		res:       w,
 		req:       r,
 		Index:     0,
-		Eventname: name,
+		Eventname: re,
 	}
 	var i int
 	i = 0
 	for i < len(Qlist) {
 		qu.Q = Qlist[i]
-		rendertemplate(w, "C:/Users/yashi/go/src/Qu izPortal/templates/quiz.html", qu)
+		rendertemplate(w, "C:/Users/yashi/go/src/QuizPortal/templates/quiz.html", qu)
 		ans := r.FormValue("answer")
 		if ans == qu.Q.Answer {
 			i++
@@ -258,11 +266,11 @@ func processorgloginform(cl *mongo.Collection, U database.Organizer, w http.Resp
 	if rr != nil {
 		log.Fatal("error occured while making a secure cookie:", rr)
 	}
-	// er := authenticate.Createorgsession(U, sessionID, w, r)
-	// if er != nil {
-	// 	log.Fatal("error occured while making a session")
-	// }
-	http.Redirect(w, r, "/QuizPortal/login/dashboard", 302)
+	er := authenticate.CreateorgSession(U, sessionID, w, r)
+	if er != nil {
+		log.Fatal("error occured while making a session")
+	}
+	http.Redirect(w, r, "/QuizPortal/organizer/dashboard", 302)
 
 }
 
@@ -278,29 +286,17 @@ func eventhandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(eve.Elist)
 	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/events.html")
 	if err != nil {
-		log.Fatal("Could not parse template files\n")
+		log.Fatal("Could not parse template files:", err)
 	}
 	er := t.Execute(w, eve)
 	if er != nil {
 		log.Fatal("could not execute the files\n:", er)
 	}
+	re := r.FormValue("eventname")
+	fmt.Println("eventname:", re)
 }
 func init() {
-	cl1, cl2, cl3,cl4, c = database.Createdb()
-	q:=database.Quizz{
-		Event: "firstname",
-		Title: "Question 1",
-		Description: "what is your name",
-		Answer: "Yashi",
-	}
-	database.Insertintoquizdb(cl4,q)
-	q1:=database.Quizz{
-		Event: "firstname",
-		Title: "Question 2",
-		Description: "My favourite Book",
-		Answer: "Me Before You",
-	}
-	database.Insertintoquizdb(cl4,q1)
+	cl1, cl2, cl3, cl4, c = database.Createdb()
 }
 
 //Checksession checks  if session is present or not
@@ -340,6 +336,15 @@ func (q Quiz) Checksession() bool {
 	return false
 }
 
+//Checksession ....
+func (em empty) Checksession() bool {
+	res, err := authenticate.ReadSecureCookieValues(em.res, em.req)
+	if res != nil && err == nil {
+		return true
+	}
+	return false
+}
+
 //Usertype defines thetype of user
 func (q Quiz) Usertype() string {
 	res, err := authenticate.ReadSecureCookieValues(q.res, q.req)
@@ -362,10 +367,15 @@ func (q Quiz) Usertype() string {
 func rendertemplate(w http.ResponseWriter, name string, data interface{}) {
 	t, err := template.ParseFiles(name)
 	if err != nil {
-		log.Fatal("Could not parse template files\n")
+		log.Fatal("Could not parse template files:", err)
 	}
 	er := t.Execute(w, data)
 	if er != nil {
 		log.Fatal("could not execute the files\n:", er)
 	}
+}
+
+func orgdashboard(w http.ResponseWriter,r *http.Request){
+
+	
 }

@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"log"
 
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
 )
 
 //Event contains the data for events.
@@ -17,8 +18,8 @@ type Event struct {
 	I                int
 	Eventsname       string
 	Eventdescription string
-	Startdate        time.Time
-	Enddate          time.Time
+	Starttime        time.Time
+	Endtime          time.Time
 	Timenow          time.Time
 }
 
@@ -78,6 +79,13 @@ func Deleteevent(collection *mongo.Collection, st string) {
 	filter := bson.D{primitive.E{Key: "eventsname", Value: st}}
 	deleteResult, err := collection.DeleteOne(context.TODO(), filter)
 	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
+}
+}
+	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
+}
 		log.Fatal(err)
 	}
 	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)

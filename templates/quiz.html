@@ -28,24 +28,24 @@
 		<a href="/QuizPortal/events" class="about">Live Events</a>
 		</div>
 		<div class="info-2">
-			<p class="about">{{ .Eventsname }}</p>
+			<p class="about">{{.Q.Event}}</p>
 		</div>	
-		<div class="info-1">
-			<form method="POST" action="/QuizPortal/leaderboard">
+		<!-- <div class="info-1">
+			<form method="POST" action="">
 				
-				<input type="hidden" name="event_name" value="{{ .Eventsname }}">
+				<input type="hidden" name="event_name" value="{{ .Q.Event }}">
 				<button type="submit" class="btn1">LEADERBOARD</button>
-			</form></div>
+			</form></div> -->
 		<!-- <a href="#">About</a> -->
 	</div>
 	<div class="quizzes">
 		<div class="quiz">
-			<h3>{{ .Q.Title } }</h3>
+			<h3>{{ .Q.Title }}</h3>
 			<p>{{ .Q.Description }}</p>
 			<form method="POST">
 				
 				<input type="text" name="answer" required="" placeholder="Your response">
-				<input type="hidden" name="eventname" value="{{.Eventsname}}">
+				<input type="hidden" name="eventname" value="{{.Q.Event}}">
 				<button type="submit" class="btn btn-secondary">Submit</button>
 			</form>
 		</div>

@@ -30,7 +30,6 @@ func CreateUserSession(u database.User, sessionID string, w http.ResponseWriter,
 	Session.Values["college"] = u.College
 	Session.Values["contact"] = u.Contact
 
-
 	err = Session.Save(r, w)
 	if err != nil {
 		log.Print(err)
@@ -49,7 +48,7 @@ func ExpireUserSession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	Session.Options.MaxAge = -1
-	 Session.Save(r, w)
+	Session.Save(r, w)
 
 }
 
@@ -58,4 +57,31 @@ func init() {
 		os.Mkdir("/tmp", 711)
 	}
 	SessionStore = sessions.NewFilesystemStore("/tmp", []byte(os.Getenv("hashkey")))
+}
+
+//CreateorgSession ......
+func CreateorgSession(u database.Organizer, sessionID string, w http.ResponseWriter, r *http.Request) error {
+
+	Session, err := SessionStore.Get(r, "QuizPortal")
+
+	if err != nil {
+		log.Print(err)
+	}
+
+	Session.Values["sessionID"] = sessionID
+	Session.Values["username"] = u.Username
+	Session.Values["email"] = ""
+	Session.Values["branch"] = ""
+	Session.Values["year"] = ""
+	Session.Values["uuid"] = ""
+	Session.Values["college"] = ""
+	Session.Values["contact"] = ""
+
+	err = Session.Save(r, w)
+	if err != nil {
+		log.Print(err)
+		return err
+	}
+
+	return nil
 }

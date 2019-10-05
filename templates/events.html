@@ -26,7 +26,7 @@
         <div class="center">
             {{ if eq .Usertype "organiser" }}
             <div class="info-1">
-                <a href='/QuizPortal/organiser' class="event">Dashboard</a>
+                <a href='/QuizPortal/organiser/dashboard' class="event">Dashboard</a>
             </div>
             {{ else }}
             <div class="info-1">
@@ -43,60 +43,24 @@
          <div class="list">
         {{range .Elist}}
             <div class="events">
-                <div class="header">{{.Eventsname}}</div>
+             
                 <p>{{.Eventdescription}}</p>
-		        {{ if and (eq .Eventstartdate .Datenow) (ge .Timenow .Eventstartdate)}}
-                <p>Live till {{ .Eventenddate }} {{.Eventendtime}}</p>
-                <form method="POST" action="/quiz/">
-		        <div>
-				<input type="hidden" name="event_name" value="{{ .Eventsname }}">
-               
-				<input type="submit" name="nothing" value="Join Now">
-				
-			    </div>
-		        </form>
-                {{else if and (lt .Eventstartdate .Datenow) (lt .Datenow .Eventendtime)}} 		
-                <p>Live till {{.Eventstartdate}} {{.Eventendtime}}</p>
-                <form method="POST" action="/quiz/">
-                    <div>
-                    <input type="hidden" name="event_name" value="{{ .Eventsname}}">
-                    
-                    <input type="submit" name="nothing" value="Join Now">
-                    
-                    </div>
-                    </form>
-                {{else if and (and (lt .Eventstartdate .Datenow) (eq .Datenow .Eventenddate)) (lt .Timenow .Eventendtime)}} 		
-                <p>Live till {{.Eventenddate }} {{ .Eventendtime}}</p>
-                <form method="POST" action="/quiz/">
-                    <div>
-                    <input type="hidden" name="event_name" value="{{  .Eventsname }}">
-                    
-                    <input type="submit" name="nothing" value="Join Now">
+               {{ if and (.After) (.Before)}}
+                      <p>Live till </p>
+                      <form method="POST" action="/quiz/">
+                         <div>
+                          <input type="hidden" name="eventname" value="{{.Eventsname}}">
 
-                    </div>
-                    </form>
-                {{else if and (and (eq .Eventstartdate .Datenow) (lt .Datenow .Eventenddate)) (ge .Timenow .Eventendtime)}} 		
-                <p>Live till {{.Eventenddate }} {{ .Eventendtime}}</p>
-                <form method="POST" action="/quiz/">
-                    <div>
-                    <input type="hidden" name="eventname" value="{{ .Eventsname }}">
+                          <input type="submit" name="nothing" value="Join Now">
 
-                    <input type="submit" name="nothing" value="Join Now">
-
-                    </div>
-                    </form>
-                {{ else if gt .Eventstartdate .Datenow}}
-			    <p>Will be Live Soon</p>
-		        {{ else if and (gt .Eventendtime .Timenow) (eq .Eventstartdate .Datenow)}}
-			    <p>Will be Live Soon</p>
-		        {{else}}
-			    <p>Event Expired</p>
-                {{end}}
-                
-            </div>
+                          </div>
+                         </form>
+                {{}}
+                      {{end}}   
+                </div>
             {{end}}
         </div>
     </div>
-<script src="/static/js/app.js"></script>
+    <script src="/static/js/app.js"></script>
 </body>
 </html>    

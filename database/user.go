@@ -3,11 +3,13 @@ package database
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 )
-var i int=0
+
+var i int
 
 //User ......
 type User struct {
@@ -21,7 +23,7 @@ type User struct {
 	PasswordHash      string
 	Timestampcreated  int64
 	Timestampmodified int64
-	eventids          []int
+	Eventids          []string
 }
 
 //Newuser .....
@@ -30,7 +32,7 @@ func Newuser(username string, email string, branch string, year string, college 
 	Password := SHA256ofstring(password)
 	now := time.Now()
 	Unixtimestamp := now.Unix()
-	U := User{UUID: GenerateUUID(), Username: username, Email: email, Branch: branch, Year: year, College: college, Contact: contact, PasswordHash: Password, Timestampcreated: Unixtimestamp, Timestampmodified: Unixtimestamp, eventids: []int{}}
+	U := User{UUID: GenerateUUID(), Username: username, Email: email, Branch: branch, Year: year, College: college, Contact: contact, PasswordHash: Password, Timestampcreated: Unixtimestamp, Timestampmodified: Unixtimestamp, Eventids: []string{}}
 	return &U
 }
 
@@ -57,16 +59,38 @@ type Organizer struct {
 	PasswordHash      string
 	Timestampcreated  int64
 	Timestampmodified int64
+	Events            []string
 }
+
 //NewEvent ........
-func NewEvent(a string,b string,c string,d string,e string,f string ) (Event){
+func NewEvent(a string, b string, c string, d string, e string, f string) Event {
 	var eve Event
-	eve.I=i
-	eve.Eventsname=a
-	eve.Eventdescription=b
-	start:=c+" "+e
-	end:=d+" "+f
-	eve.Timenow=time.Now()
-	eve.Starttime,_=time.Parse("03-08-2009 00:00",start)
-	eve.Endtime,_=time.Parse("03-08-2009 00:00",end)
+	eve.I = i
+	eve.Eventsname = a
+	eve.Eventdescription = b
+	eve.Startdate=c
+	eve.Enddate=e
+	eve.stime=d
+	eve.etime=f
+	start := c + " at " + d
+	end := e + " at " + f
+	fmt.Println(start, end)
+	t := time.Now()
+	t1 := t.Format("2006-Jan-02 at 03:04pm")
+	t2, _ := time.Parse("2006-Jan-02 at 03:04pm", t1)
+	eve.Timenow = t2
+	eve.Starttime, _ = time.Parse("2006-Jan-02 at 03:04pm", start)
+	eve.Endtime, _ = time.Parse("2006-Jan-02 at 03:04pm", end)
+	i++
+	return eve
+}
+
+//After Compares the time .....
+func (e Event) After() bool {
+	return e.Endtime.After(e.Timenow)
+}
+
+//Before ....
+func (e Event) Before() bool {
+	return e.Starttime.Before(e.Timenow)
 }
