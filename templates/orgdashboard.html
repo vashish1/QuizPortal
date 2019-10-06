@@ -46,11 +46,11 @@
                     <!-- <div class="leaderboard"> -->
                      {{range .List}}
                     <div class="block">
-                        <div class="innerblock" title="Event Name">{{ .Eventsname }}</div>
-                        <div class="innerblock" title="Event Start Date">{{ .Startdate }}</div>
-                        <div class="innerblock" title="Event End Date">{{ .Enddate }}</div>
-                        <div class="innerblock" title="Event Start Time">{{ .Stime }}</div>
-                        <div class="innerblock" title="Event End Time">{{ .Etime }}</div>
+                        <div class="innerblock" title="Event Name">{{.Eventsname }}</div>
+                        <div class="innerblock" title="Event Start Date">{{.Startdate }}</div>
+                        <div class="innerblock" title="Event End Date">{{.Enddate}}</div>
+                        <div class="innerblock" title="Event Start Time">{{.Stime }}</div>
+                        <div class="innerblock" title="Event End Time">{{.Etime }}</div>
                         <div class="innerblock">
                             <form method="POST" action="/QuizPortal/update/">
                             

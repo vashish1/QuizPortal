@@ -15,9 +15,12 @@ import (
 
 //Event contains the data for events.
 type Event struct {
-	I                int
 	Eventsname       string
 	Eventdescription string
+	Startdate string
+	Enddate string
+	Stime string
+	Etime string
 	Starttime        time.Time
 	Endtime          time.Time
 	Timenow          time.Time
@@ -81,11 +84,11 @@ func Deleteevent(collection *mongo.Collection, st string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
+	fmt.Printf("Deleted %v documents in the events collection\n", deleteResult.DeletedCount)
 }
 
 //Findevent finds the particular event from database
-func Findevent() Event{
+func Findevent(c *mongo.Collection, st string) Event {
 	filter := bson.D{primitive.E{Key: "eventsname", Value: st}}
 	var result Event
 

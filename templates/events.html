@@ -24,7 +24,7 @@
             {{end}}
         </div> 
         <div class="center">
-            {{ if eq .Usertype "organiser" }}
+            {{ if .Usertype }}
             <div class="info-1">
                 <a href='/QuizPortal/organiser/dashboard' class="event">Dashboard</a>
             </div>
@@ -43,16 +43,18 @@
          <div class="list">
         {{range .Elist}}
             <div class="events">
-             
+                <div class="header">{{ .Eventsname }}</div>
                 <p>{{.Eventdescription}}</p>
                {{ if and (.After) (.Before)}}
                       <p>Live till </p>
                       <form method="POST" action="/quiz/">
                          <div>
                           <input type="hidden" name="eventname" value="{{.Eventsname}}">
-
+                          {{ if .Usertype }}
+                          <p><b>Log in as a Participant to Join</b></p>
+                          {{ else}}
                           <input type="submit" name="nothing" value="Join Now">
-
+                           {{end}}
                           </div>
                          </form>
                 {{else if not (.Before) }}

@@ -26,7 +26,6 @@ type empty struct {
 type Events struct {
 	res   http.ResponseWriter
 	req   *http.Request
-	Index int
 	Elist []database.Event
 }
 
@@ -114,6 +113,11 @@ func signuphandler(w http.ResponseWriter, r *http.Request) {
 
 func loginhandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("yahaan aagya")
+	em :=empty{
+		res: w,
+		req: r,
+	}
+
 	switch r.Method {
 
 	case "GET":
@@ -124,7 +128,7 @@ func loginhandler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Fatal("Could not parse template files\n")
 			}
-			er := t.Execute(w, "")
+			er := t.Execute(w, em)
 			if er != nil {
 				log.Fatal("could not execute the files\n")
 			}
@@ -209,16 +213,21 @@ func quizhandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+
 //dashboard ....
 func dashboard(w http.ResponseWriter, r *http.Request) {
 	value := authenticate.Getcookievalues(w, r)
 	fmt.Println(value)
+	em:=empty{
+		res: w,
+		req: r,
+	}
 	fmt.Println("yeh chlra hai")
 	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/dashboard.html")
 	if err != nil {
 		log.Fatal("Could not parse template files\n")
 	}
-	er := t.Execute(w, "")
+	er := t.Execute(w, em)
 	if er != nil {
 
 		log.Fatal("could not execute the files\n")
@@ -241,11 +250,16 @@ func About(w http.ResponseWriter, r *http.Request) {
 //Contacthandler .....
 func Contacthandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("contact chlra hai")
+	em:=empty{
+		res: w,
+		req: r,
+	   }
+    
 	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/contact.html")
 	if err != nil {
 		log.Fatal("Could not parse template files\n")
 	}
-	er := t.Execute(w, "")
+	er := t.Execute(w, em)
 	if er != nil {
 		log.Fatal("could not execute the files\n")
 	}
@@ -291,7 +305,6 @@ func eventhandler(w http.ResponseWriter, r *http.Request) {
 	eve = Events{
 		res:   w,
 		req:   r,
-		Index: 1,
 		Elist: database.Findfromeventdb(cl3),
 	}
 	fmt.Println(eve.Elist)
@@ -303,8 +316,6 @@ func eventhandler(w http.ResponseWriter, r *http.Request) {
 	if er != nil {
 		log.Fatal("could not execute the files\n:", er)
 	}
-	re := r.FormValue("eventname")
-	fmt.Println("eventname:", re)
 }
 func init() {
 	cl1, cl2, cl3, cl4, c = database.Createdb()
@@ -329,23 +340,22 @@ func (e Myevents) Checksession() bool {
 }
 
 //Usertype defines thetype of user
-func (e Events) Usertype() string {
+func (e Events) Usertype() bool {
 	res, err := authenticate.ReadSecureCookieValues(e.res, e.req)
+	fmt.Println(res)
 	if err != nil {
 		st := res["username"]
 		fmt.Println(st)
-		x := database.Findfromuserdb(cl1, st)
 		y := database.Findfromorganizerdb(cl2, st)
-		if x == true {
-			return "user"
-		} else if y == true {
-			return "organizer"
-		} else {
-			return "null"
-		}
+		 
+		return y
+	   }
+
+		   fmt.Println("error while secure cookie read is :",err)
+		   return false
+	   
 	}
-	return "null"
-}
+ 
 
 //Checksession ....
 func (q Quiz) Checksession() bool {
@@ -366,41 +376,29 @@ func (em empty) Checksession() bool {
 }
 
 //Usertype defines thetype of user
-func (q Quiz) Usertype() string {
+func (q Quiz) Usertype() bool {
 	res, err := authenticate.ReadSecureCookieValues(q.res, q.req)
 	if err != nil {
 		st := res["username"]
 		fmt.Println(st)
-		x := database.Findfromuserdb(cl1, st)
 		y := database.Findfromorganizerdb(cl2, st)
-		if x == true {
-			return "user"
-		} else if y == true {
-			return "organizer"
-		} else {
-			return "null"
-		}
-	}
-	return "null"
+		 
+		return y
+	   }
+	   return false
 }
 
 //Usertype defines thetype of user
-func (em empty) Usertype() string {
+func (em empty) Usertype() bool{
 	res, err := authenticate.ReadSecureCookieValues(em.res, em.req)
 	if err != nil {
 		st := res["username"]
 		fmt.Println(st)
-		x := database.Findfromuserdb(cl1, st)
 		y := database.Findfromorganizerdb(cl2, st)
-		if x == true {
-			return "user"
-		} else if y == true {
-			return "organizer"
-		} else {
-			return "null"
-		}
-	}
-	return "null"
+		 
+		return y
+	   }
+	   return false
 }
 
 func rendertemplate(w http.ResponseWriter, name string, data Quiz) {
@@ -470,7 +468,7 @@ func addevent(w http.ResponseWriter, r *http.Request){
 			fmt.Println("event adiition function  chlra hai")
 			t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/addevent.html")
 			if err != nil {
-				log.Fatal("Could not parse template files\n")
+				log.Fatal("Could not parse template files:",err)
 			}
 			er := t.Execute(w, em)
 			if er != nil {
@@ -488,11 +486,13 @@ func addevent(w http.ResponseWriter, r *http.Request){
 			d := r.FormValue("enddate")
 			e := r.FormValue("starttime")
 			f := r.FormValue("endtime")
-			
+			fmt.Println(a,b,c,d,e,f)
 
 			u := database.NewEvent(a, b, c, e, d, f)
 			database.Insertintoeventdb(cl3,u)
 			fmt.Println("Event inserted:",u)
+			s:=findusername(w,r)
+			database.Updateorg(cl2,s,a)
 			http.Redirect(w,r,"/QuizPortal/organizer/dashboard",302)
 			}
 	}
@@ -501,6 +501,7 @@ func addevent(w http.ResponseWriter, r *http.Request){
 
 func deleteevent(w http.ResponseWriter,r *http.Request){
 	res:=r.FormValue("eventname")
+	fmt.Println(res)
 	database.Deleteevent(cl3,res)
 	http.Redirect(w,r,"/QuizPortal/organizer/dashboard",302)
 }
@@ -516,7 +517,7 @@ func updateevent(w http.ResponseWriter,r *http.Request){
 			fmt.Println("question adiition function  chlra hai")
 			t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/addquestion.html")
 			if err != nil {
-				log.Fatal("Could not parse template files\n")
+				log.Fatal("Could not parse template files:",err)
 			}
 			er := t.Execute(w, "")
 			if er != nil {

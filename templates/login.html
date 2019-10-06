@@ -14,7 +14,12 @@
 <div class="box">
 	<div class="top">
 		<img src="../static/img/mmil_logo.jpg" width="50px"><a href="/">MMIL</a> 
-
+		{{if .Checksession}} 
+		<button onclick="logout()"class="button">Log Out</button>
+		{{else}}
+		<button onclick="login()">Log In</button>
+		<button onclick="signup()">Sign Up</button>
+		{{end}}
 	</div>
 	<div class="center">
 		<div class="info-1 ">

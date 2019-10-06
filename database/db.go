@@ -34,8 +34,8 @@ func Createdb() (*mongo.Collection, *mongo.Collection, *mongo.Collection, *mongo
 	usercollection := client.Database("Quiz").Collection("User")
 	organizercollection := client.Database("Quiz").Collection("organizer")
 	eventcollection := client.Database("Quiz").Collection("event")
-	quizcollection:=client.Database("Quiz").Collection("quiz")
-	return usercollection, organizercollection, eventcollection,quizcollection, client
+	quizcollection := client.Database("Quiz").Collection("quiz")
+	return usercollection, organizercollection, eventcollection, quizcollection, client
 }
 
 //Insertintouserdb inserts the data into the database
@@ -57,7 +57,7 @@ func Findfromuserdb(usercollection *mongo.Collection, st string) bool {
 
 	err := usercollection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		return false
 	}
 	return true
@@ -81,14 +81,10 @@ func Findfromorganizerdb(organizercollection *mongo.Collection, st string) bool 
 
 	err := organizercollection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		return false
 	}
-
-	if result.PasswordHash != "" {
-		return true
-	}
-
-	return false
+    return true
 
 }
 
@@ -121,4 +117,20 @@ func Findorgdb(c *mongo.Collection, s string) Organizer {
 		return result
 	}
 	return result
+}
+
+//Updateorg updates the organizer database
+func Updateorg(c *mongo.Collection, o string, s string) {
+
+	filter := bson.D{{"username", o}}
+
+	update := bson.M{
+		"$push":bson.M{"events":s}}
+
+	updateResult, err := c.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
 }

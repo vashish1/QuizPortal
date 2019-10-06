@@ -75,13 +75,8 @@ func Findfromquizdb(collection *mongo.Collection, st string) []Quizz {
 //Deletequiz deletes the corresponding event from database
 func Deletequiz(collection *mongo.Collection, st string) {
 
-	filter := bson.D{primitive.E{Key: "title", Value: st}}
+	filter := bson.D{primitive.E{Key: "", Value: st}}
 	deleteResult, err := collection.DeleteOne(context.TODO(), filter)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
-}
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -30,7 +30,7 @@
             {{end}}
 	</div>
 	<div class="center">
-		{{ if eq .Usertype "organiser" }}
+		{{ if  .Usertype  }}
 		<div class="info-1">
 			<a href='/QuizPortal/organiser/dashboard' class="event">Dashboard</a>
 		</div>
@@ -62,19 +62,19 @@
 			</div>
 			<div class="info">
 				<label>Starting Date: </label>
-				<input type="Date" name="startdate" required="" />
+				<input placeholder="yyyy-Mon-dd" name="startdate" required="" />
 			</div>
 			<div class="info">
 				<label>Ending Date:</label>
-				<input type="Date" name="enddate" required="" />
+				<input placeholder="yyyy-Mon-dd" name="enddate" required="" />
 			</div>
 			<div class="info">
 				<label>Starting time:</label>
-				<input type="time" name="starttime" required=""/>
+				<input placeholder="__:__am/pm" name="starttime" required=""/>
 			</div>
 			<div class="info">
 				<label>Ending time:</label>
-				<input type="time" name="endtime" required=""/>
+				<input placeholder="__:__am/pm" name="endtime" required=""/>
 			</div>
 				<input type="submit" name="submit" value="Submit">
 			</form>	
