@@ -12,70 +12,12 @@ a function to check if the user is authenticated( to check if the session is ava
 
 
 
-<!-- <div class="header">{{.Eventsname}}</div>
-<p>{{.Eventdescription}}</p>
-{{ if and (eq .Eventstartdate .Datenow) (ge .Timenow .Eventstartdate)}}
-<p>Live till {{ .Eventenddate }} {{.Eventendtime}}</p>
-<form method="POST" action="/quiz/">
-<div>
-<input type="hidden" name="event_name" value="{{ .Eventsname }}">
-
-<input type="submit" name="nothing" value="Join Now">
-
-</div>
-</form>
-{{else if and (lt .Eventstartdate .Datenow) (lt .Datenow .Eventendtime)}} 		
-<p>Live till {{.Eventstartdate}} {{.Eventendtime}}</p>
-<form method="POST" action="/quiz/">
-    <div>
-    <input type="hidden" name="event_name" value="{{ .Eventsname}}">
-    
-    <input type="submit" name="nothing" value="Join Now">
-    
-    </div>
-    </form>
-{{else if and (and (lt .Eventstartdate .Datenow) (eq .Datenow .Eventenddate)) (lt .Timenow .Eventendtime)}} 		
-<p>Live till {{.Eventenddate }} {{ .Eventendtime}}</p>
-<form method="POST" action="/quiz/">
-    <div>
-    <input type="hidden" name="event_name" value="{{  .Eventsname }}">
-    
-    <input type="submit" name="nothing" value="Join Now">
-
-    </div>
-    </form>
-{{else if and (and (eq .Eventstartdate .Datenow) (lt .Datenow .Eventenddate)) (ge .Timenow .Eventendtime)}} 		
-<p>Live till {{.Eventenddate }} {{ .Eventendtime}}</p>
-<form method="POST" action="/quiz/">
-    <div>
-    <input type="hidden" name="eventname" value="{{ .Eventsname }}">
-
-    <input type="submit" name="nothing" value="Join Now">
-
-    </div>
-    </form>
-{{ else if gt .Eventstartdate .Datenow}}
-<p>Will be Live Soon</p>
-{{ else if and (gt .Eventendtime .Timenow) (eq .Eventstartdate .Datenow)}}
-<p>Will be Live Soon</p>
-{{else}}
-<p>Event Expired</p>
-{{end}} -->
-
-
-// //Findevent finds the event  in the database
-// func Findevent(collection *mongo.Collection, st string) Event{
-// 	filter := bson.D{primitive.E{Key: "eventsname", Value: st}}
-// 	var result Event
-
-// 	err := c.FindOne(context.TODO(), filter).Decode(&result)
-// 	if err != nil {
-// 		return result
-// 	}
-// 	return result
-// }
-
-
+method+action wale saare url add krne hain
+leaderboard
+logout
+verification of password and id
+Quizcompleted template
+Quiz ke ander usertype wala point add kra hai
 
 
 

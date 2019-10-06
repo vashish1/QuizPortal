@@ -69,8 +69,8 @@ func NewEvent(a string, b string, c string, d string, e string, f string) Event 
 	var eve Event
 	eve.Eventsname = a
 	eve.Eventdescription = b
-	start := c + " at " + d
-	end := e + " at " + f
+	start := c + " at " + e
+	end := d + " at " + f
 	fmt.Println(start, end)
 	eve.Startdate=c
 	eve.Enddate=d
