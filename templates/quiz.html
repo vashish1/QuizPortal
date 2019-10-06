@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>
-		Quizzes
+		Quiz
 	</title>
 	<meta content="width=device-width, initial-scale=1" name="viewport" />
 	<!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
@@ -40,6 +40,9 @@
 	</div>
 	<div class="quizzes">
 		<div class="quiz">
+			{{ if .Usertype }}
+			<a href="/QuizPortal/login" style="font-family: arca"><u>Log in as a Participant!</u></a>
+			 {{else}}
 			<h3>{{ .Q.Title }}</h3>
 			<p>{{ .Q.Description }}</p>
 			<form method="POST">
@@ -48,6 +51,7 @@
 				<input type="hidden" name="eventname" value="{{.Q.Event}}">
 				<button type="submit" class="btn btn-secondary">Submit</button>
 			</form>
+			{{end}}
 		</div>
 	</div>
 </div>
