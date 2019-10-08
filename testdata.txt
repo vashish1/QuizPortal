@@ -1,24 +1,4 @@
-slice of events
-structure of events- events_name
-                   -event_description
-                   -event_start_date
-                   -time.now
-                   -event_start_time
-                   -event_end_date
-                   -event_end_time
-                   
-a function to check if the user is organizer or participant
-a function to check if the user is authenticated( to check if the session is available or not)
-
-
-
-method+action wale saare url add krne hain
 leaderboard
-logout
-verification of password and id
 Quizcompleted template
-Quiz ke ander usertype wala point add kra hai
-
-
-
+javascripts to pop up messages like incorrect username
 Event added template
