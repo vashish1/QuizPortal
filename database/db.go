@@ -84,7 +84,7 @@ func Findfromorganizerdb(organizercollection *mongo.Collection, st string) bool 
 		fmt.Println(err)
 		return false
 	}
-    return true
+	return true
 
 }
 
@@ -121,11 +121,8 @@ func Findorgdb(c *mongo.Collection, s string) Organizer {
 
 //Updateorg updates the organizer database
 func Updateorg(c *mongo.Collection, o string, s string) {
-
-	filter := bson.D{{"username", o}}
-
-	update := bson.M{
-		"$push":bson.M{"events":s}}
+	filter := bson.D{primitive.E{Key: "username", Value: o}}
+	update := bson.M{"$push": bson.M{"events": s}}
 
 	updateResult, err := c.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
