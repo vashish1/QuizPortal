@@ -122,18 +122,18 @@ func signuphandler(w http.ResponseWriter, r *http.Request) {
 
 func loginhandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("login mein aagya")
-	 x,_:=authenticate.ReadSecureCookieValues(w,r)
-	 if x==nil{
+	x, _ := authenticate.ReadSecureCookieValues(w, r)
+	if x == nil {
 		em := empty{
 			res: w,
 			req: r,
 		}
-	
+
 		switch r.Method {
-	
+
 		case "GET":
 			{
-	
+
 				fmt.Println("yeh chlra hai")
 				t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/login.html")
 				if err != nil {
@@ -157,13 +157,13 @@ func loginhandler(w http.ResponseWriter, r *http.Request) {
 				} else {
 					http.Redirect(w, r, "/QuizPortal/login", 302)
 				}
-	
-	 }
-	
-    }
 
-	}else{
-		http.Redirect(w,r,"/QuizPortal/login/dashboard",302)
+			}
+
+		}
+
+	} else {
+		http.Redirect(w, r, "/QuizPortal/login/dashboard", 302)
 	}
 
 }
@@ -218,9 +218,9 @@ func quizhandler(w http.ResponseWriter, r *http.Request) {
 		re := r.FormValue("eventname")
 		fmt.Println("eventname:", re)
 		fmt.Println("2")
-       Qlist = database.Findfromquizdb(cl4, re)
-	   fmt.Println("3")	
-	   qu = Quiz{
+		Qlist = database.Findfromquizdb(cl4, re)
+		fmt.Println("3")
+		qu = Quiz{
 			res:       w,
 			req:       r,
 			Index:     0,
@@ -304,7 +304,7 @@ func Contacthandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func processsignupform(cl *mongo.Collection, U database.User, w http.ResponseWriter, r *http.Request) {
-	database.Insertintouserdb(cl1,U)
+	database.Insertintouserdb(cl1, U)
 	t := database.Findfromuserdb(cl, U.Username)
 	if t == true {
 		processloginform(cl, U, w, r)
