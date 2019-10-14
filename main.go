@@ -62,7 +62,7 @@ func main() {
 	r.HandleFunc("/QuizPortal/update/", updateevent).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/deleteEvent/", deleteevent).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/addEvent", addevent).Methods("GET", "POST")
-	r.HandleFunc("/QuizPortal/logout", logout).Methods("GET")
+	r.HandleFunc("/QuizPortal/logout", logout).Methods("POST")
 	http.Handle("/", r)
 	http.ListenAndServe(":8000", nil)
 }
@@ -208,10 +208,12 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func quizhandler(w http.ResponseWriter, r *http.Request) {
+    
+	
 	fmt.Println("quiz chlra hai")
 	var qu Quiz
-	var Qlist []database.Quizz
-
+	var Qlist []database.Quizz   
+    var ans string
 	switch r.Method {
 	case "POST":
 		fmt.Println("1")
@@ -226,30 +228,29 @@ func quizhandler(w http.ResponseWriter, r *http.Request) {
 			Index:     0,
 			Eventname: re,
 		}
-		v := len(Qlist)
-		fmt.Println("4")
-		fmt.Println("v:", v)
-		if i < v {
-			fmt.Println("i:", i)
-			qu.Q = Qlist[i]
-			fmt.Println(qu.Q)
-			rendertemplate(w, "C:/Users/yashi/go/src/QuizPortal/templates/quiz.html", qu)
-		}
 		fmt.Println("5")
-		ans := r.FormValue("answer")
+		ans = r.FormValue("answer")
 		fmt.Println(ans)
-		fmt.Println(qu.Q)
 		fmt.Println("6")
+	case "GET" :
+		 qu.Q=Qlist[i]
+		 t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/quiz.html")
+			if err != nil {
+				log.Fatal("Could not parse template files:", err)
+			}
+			er := t.Execute(w, qu)
+			if er != nil {
+				log.Fatal("could not execute the files\n:", er)
+			}
 
-		if ans == qu.Q.Answer {
+		 if ans == qu.Q.Answer {
 			i++
 			fmt.Println(i)
 			fmt.Println("7")
 			http.Redirect(w, r, "/quiz/", 302)
 			fmt.Println("8")
 		}
-
-	}
+}
 }
 
 //dashboard ....
@@ -441,16 +442,16 @@ func (em empty) Usertype() bool {
 	return false
 }
 
-func rendertemplate(w http.ResponseWriter, name string, data Quiz) {
-	t, err := template.ParseFiles(name)
-	if err != nil {
-		log.Fatal("Could not parse template files:", err)
-	}
-	er := t.Execute(w, data)
-	if er != nil {
-		log.Fatal("could not execute the files\n:", er)
-	}
-}
+// func rendertemplate(w http.ResponseWriter, name string, data Quiz) {
+// 	t, err := template.ParseFiles(name)
+// 	if err != nil {
+// 		log.Fatal("Could not parse template files:", err)
+// 	}
+// 	er := t.Execute(w, data)
+// 	if er != nil {
+// 		log.Fatal("could not execute the files\n:", er)
+// 	}
+// }
 
 func orgdashboard(w http.ResponseWriter, r *http.Request) {
 	x := findusername(w, r)

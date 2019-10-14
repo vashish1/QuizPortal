@@ -23,7 +23,13 @@ type User struct {
 	PasswordHash      string
 	Timestampcreated  int64
 	Timestampmodified int64
-	Eventids          []string
+	Score             []Scores
+}
+
+//Scores ....
+type Scores struct {
+	Event  string
+	Points int
 }
 
 //Newuser .....
@@ -32,7 +38,7 @@ func Newuser(username string, email string, branch string, year string, college 
 	Password := SHA256ofstring(password)
 	now := time.Now()
 	Unixtimestamp := now.Unix()
-	U := User{UUID: GenerateUUID(), Username: username, Email: email, Branch: branch, Year: year, College: college, Contact: contact, PasswordHash: Password, Timestampcreated: Unixtimestamp, Timestampmodified: Unixtimestamp, Eventids: []string{}}
+	U := User{UUID: GenerateUUID(), Username: username, Email: email, Branch: branch, Year: year, College: college, Contact: contact, PasswordHash: Password, Timestampcreated: Unixtimestamp, Timestampmodified: Unixtimestamp, Score: []Scores{}}
 	return &U
 }
 
