@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Quiz Over
+	</title>
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/quiz.css">
+	<link href="https://fonts.googleapis.com/css?family=Work+Sans:500&display=swap" rel="stylesheet">
+	</head>
+<body>
+<div class="box">
+	<div class="top">
+		<img src="/static/img/mmil_logo.jpg" width="50px"><a href="dashboard.html">MMIL</a>
+		{{ if .Checksssion}}
+		<button class="button" onclick="logout()">Log Out</button>
+		{{else}}
+		<button onclick="login()">Log In</button>
+		<button class="signn" onclick="signup()">Sign Up</button>
+		{{ end}}
+	</div>
+	<div class="center">
+		<div class="info-1">
+		<a href="/QuizPortal/events" class="about" style="font-size: 17.5px;">Live Events</a>
+		</div>
+		<div class="info-1">
+			<p class="about" style="font-size: 20px;">{{ Eventsname }}</p>
+		</div>	
+		<div class="info-1">
+			<form method="POST" action="/leaderboard/">
+				<input type="hidden" name="event_name" value="{{ event_name }}">
+				<button type="submit" class="btn1" style="font-size: 17.5px;">LEADERBOARD</button>
+			</form></div>
+	</div>
+	<p style="text-align: center;font-size: 30px;margin-top: 100px;">Completed!!!!</p>
+</div>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
