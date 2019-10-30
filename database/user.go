@@ -24,6 +24,8 @@ type User struct {
 	Timestampcreated  int64
 	Timestampmodified int64
 	Score             []Scores
+	Userlevel         int
+	Question          int
 }
 
 //Scores ....
@@ -38,7 +40,7 @@ func Newuser(username string, email string, branch string, year string, college 
 	Password := SHA256ofstring(password)
 	now := time.Now()
 	Unixtimestamp := now.Unix()
-	U := User{UUID: GenerateUUID(), Username: username, Email: email, Branch: branch, Year: year, College: college, Contact: contact, PasswordHash: Password, Timestampcreated: Unixtimestamp, Timestampmodified: Unixtimestamp, Score: []Scores{}}
+	U := User{UUID: GenerateUUID(), Username: username, Email: email, Branch: branch, Year: year, College: college, Contact: contact, PasswordHash: Password, Timestampcreated: Unixtimestamp, Timestampmodified: Unixtimestamp, Score: []Scores{}, Userlevel: 1, Question: 1}
 	return &U
 }
 
@@ -80,10 +82,6 @@ func NewEvent(a string, b string, c string, d string, e string, f string) Event 
 	eve.Enddate = d
 	eve.Stime = e
 	eve.Etime = f
-	t := time.Now()
-	t1 := t.Format("2006-Jan-02 at 03:04pm")
-	t2, _ := time.Parse("2006-Jan-02 at 03:04pm", t1)
-	eve.Timenow = t2
 	eve.Starttime, _ = time.Parse("2006-Jan-02 at 03:04pm", start)
 	eve.Endtime, _ = time.Parse("2006-Jan-02 at 03:04pm", end)
 	i++

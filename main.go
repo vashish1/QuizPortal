@@ -62,7 +62,7 @@ func main() {
 	r.HandleFunc("/QuizPortal/update/", updateevent).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/deleteEvent/", deleteevent).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/addEvent", addevent).Methods("GET", "POST")
-	r.HandleFunc("/QuizPortal/logout", logout).Methods("POST")
+	r.HandleFunc("/QuizPortal/logout", logout)
 	http.Handle("/", r)
 	http.ListenAndServe(":8000", nil)
 }
@@ -114,7 +114,7 @@ func signuphandler(w http.ResponseWriter, r *http.Request) {
 
 			u := database.Newuser(a, b, c, d, e, f, g)
 			user := *u
-			processsignupform(cl1, user, w, r)
+			processsignupform( user, w, r)
 
 		}
 	}
@@ -153,7 +153,7 @@ func loginhandler(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("username", a)
 				user := database.Finddb(cl1, a)
 				if user.PasswordHash == database.SHA256ofstring(b) {
-					processloginform(cl1, user, w, r)
+					processloginform( user, w, r)
 				} else {
 					http.Redirect(w, r, "/QuizPortal/login", 302)
 				}
@@ -198,7 +198,7 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 			b := r.FormValue("password")
 			user := database.Findorgdb(cl2, a)
 			if user.PasswordHash == database.SHA256ofstring(b) {
-				processorgloginform(cl1, user, w, r)
+				processorgloginform( user, w, r)
 			} else {
 				http.Redirect(w, r, "/QuizPortal/organizer", 302)
 			}
@@ -208,49 +208,54 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func quizhandler(w http.ResponseWriter, r *http.Request) {
-    
-	
+
 	fmt.Println("quiz chlra hai")
 	var qu Quiz
-	var Qlist []database.Quizz   
-    var ans string
+	var level int
+	var Qlist []database.Quizz
+	var ans string
 	switch r.Method {
 	case "POST":
-		fmt.Println("1")
-		re := r.FormValue("eventname")
-		fmt.Println("eventname:", re)
-		fmt.Println("2")
-		Qlist = database.Findfromquizdb(cl4, re)
-		fmt.Println("3")
-		qu = Quiz{
-			res:       w,
-			req:       r,
-			Index:     0,
-			Eventname: re,
-		}
-		fmt.Println("5")
-		ans = r.FormValue("answer")
-		fmt.Println(ans)
-		fmt.Println("6")
-	case "GET" :
-		 qu.Q=Qlist[i]
-		 t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/quiz.html")
-			if err != nil {
-				log.Fatal("Could not parse template files:", err)
-			}
-			er := t.Execute(w, qu)
-			if er != nil {
-				log.Fatal("could not execute the files\n:", er)
-			}
+		// fmt.Println("1")
+		// re := r.FormValue("eventname")
+		// fmt.Println("eventname:", re)
+		// fmt.Println("2")
+		// u:=findusername(w,r)
+		// user:=database.Finddb(cl1,u)
+		// level=user.Userlevel
+		// Qlist = database.Findfromquizdb(cl4, re)
+		// fmt.Println("3")
+		// qu = Quiz{
+		// 	res:       w,
+		// 	req:       r,
+		// 	Index:     0,
+		// 	Eventname: re,
+		// }
+		// fmt.Println("5")
+		// ans = r.FormValue("answer")
+		// fmt.Println(ans)
+		// fmt.Println("6")
+	case "GET":
+		a := r.FormValue("eventname")
+		fmt.Print("getvalue", a)
+		//  qu.Q=Qlist[level]
+		//  t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/quiz.html")
+		// 	if err != nil {
+		// 		log.Fatal("Could not parse template files:", err)
+		// 	}
+		// 	er := t.Execute(w, qu)
+		// 	if er != nil {
+		// 		log.Fatal("could not execute the files\n:", er)
+		// 	}
 
-		 if ans == qu.Q.Answer {
-			i++
-			fmt.Println(i)
-			fmt.Println("7")
-			http.Redirect(w, r, "/quiz/", 302)
-			fmt.Println("8")
-		}
-}
+		//  if ans == qu.Q.Answer {
+		// 	i++
+		// 	fmt.Println(i)
+		// 	fmt.Println("7")
+		// 	http.Redirect(w, r, "/quiz/", 302)
+		// 	fmt.Println("8")
+		// }
+	}
 }
 
 //dashboard ....
@@ -304,15 +309,15 @@ func Contacthandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func processsignupform(cl *mongo.Collection, U database.User, w http.ResponseWriter, r *http.Request) {
+func processsignupform( U database.User, w http.ResponseWriter, r *http.Request) {
 	database.Insertintouserdb(cl1, U)
-	t := database.Findfromuserdb(cl, U.Username)
+	t := database.Findfromuserdb(cl1, U.Username)
 	if t == true {
-		processloginform(cl, U, w, r)
+		processloginform( U, w, r)
 	}
 }
 
-func processloginform(cl *mongo.Collection, U database.User, w http.ResponseWriter, r *http.Request) {
+func processloginform( U database.User, w http.ResponseWriter, r *http.Request) {
 	sessionID := database.GenerateUUID()
 	rr := authenticate.CreateSecureCookie(U, sessionID, w, r)
 	if rr != nil {
@@ -325,7 +330,7 @@ func processloginform(cl *mongo.Collection, U database.User, w http.ResponseWrit
 	http.Redirect(w, r, "/QuizPortal/login/dashboard", 302)
 
 }
-func processorgloginform(cl *mongo.Collection, U database.Organizer, w http.ResponseWriter, r *http.Request) {
+func processorgloginform( U database.Organizer, w http.ResponseWriter, r *http.Request) {
 	sessionID := database.GenerateUUID()
 	rr := authenticate.CreateSecureorgCookie(U, sessionID, w, r)
 	if rr != nil {
