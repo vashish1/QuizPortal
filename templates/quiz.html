@@ -46,9 +46,8 @@
 			<h3>{{ .Q.Title }}</h3>
 			<p>{{ .Q.Description }}</p>
 			<form method="POST">
-				
+				<input type="hidden" name="eventname" value="{{.Eventname}}">
 				<input type="text" name="answer" required="" placeholder="Your response">
-				<input type="hidden" name="eventname" value="{{.Q.Event}}">
 				<button type="submit" class="btn btn-secondary">Submit</button>
 			</form>
 			{{end}}

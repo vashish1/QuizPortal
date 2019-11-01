@@ -24,14 +24,13 @@ type User struct {
 	Timestampcreated  int64
 	Timestampmodified int64
 	Score             []Scores
-	Userlevel         int
-	Question          int
 }
 
 //Scores ....
 type Scores struct {
 	Event  string
 	Points int
+	Userlevel int
 }
 
 //Newuser .....
@@ -40,7 +39,7 @@ func Newuser(username string, email string, branch string, year string, college 
 	Password := SHA256ofstring(password)
 	now := time.Now()
 	Unixtimestamp := now.Unix()
-	U := User{UUID: GenerateUUID(), Username: username, Email: email, Branch: branch, Year: year, College: college, Contact: contact, PasswordHash: Password, Timestampcreated: Unixtimestamp, Timestampmodified: Unixtimestamp, Score: []Scores{}, Userlevel: 1, Question: 1}
+	U := User{UUID: GenerateUUID(), Username: username, Email: email, Branch: branch, Year: year, College: college, Contact: contact, PasswordHash: Password, Timestampcreated: Unixtimestamp, Timestampmodified: Unixtimestamp, Score: []Scores{}}
 	return &U
 }
 
@@ -97,3 +96,8 @@ func (e Event) After() bool {
 func (e Event) Before() bool {
 	return e.Starttime.Before(e.Timenow)
 }
+//
+////Updateuser updates the score of the user
+//func Updateuser(c mongo,name string){
+//
+//}
