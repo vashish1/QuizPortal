@@ -30,6 +30,7 @@ type User struct {
 type Scores struct {
 	Event  string
 	Points int
+	Userlevel int
 }
 
 //Newuser .....
@@ -80,10 +81,6 @@ func NewEvent(a string, b string, c string, d string, e string, f string) Event 
 	eve.Enddate = d
 	eve.Stime = e
 	eve.Etime = f
-	t := time.Now()
-	t1 := t.Format("2006-Jan-02 at 03:04pm")
-	t2, _ := time.Parse("2006-Jan-02 at 03:04pm", t1)
-	eve.Timenow = t2
 	eve.Starttime, _ = time.Parse("2006-Jan-02 at 03:04pm", start)
 	eve.Endtime, _ = time.Parse("2006-Jan-02 at 03:04pm", end)
 	i++

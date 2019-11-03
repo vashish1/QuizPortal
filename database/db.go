@@ -131,3 +131,48 @@ func Updateorg(c *mongo.Collection, o string, s string) {
 
 	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
 }
+
+//Updateuserscores updates the score of the user
+func Updateuserscores(c *mongo.Collection,username string,ename string,p int,l int){
+	filter := bson.D{
+		{"username",username},
+		{"score",bson.D{
+		{"event",ename},
+	}}}
+    update :=bson.D{{"$set",bson.D{
+    	{"score.event",ename},
+    	{"score.userlevel",l},
+	},
+    },
+    {"$inc",bson.D{
+    	{"score.points",p},
+    },
+	}}
+	updateResult, err := c.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+}
+
+//Findscore finds the score of a user for a particular event
+func Findscore(c *mongo.Collection,u string,e string) Scores{
+	filter := bson.D{
+		{"username",u},
+	    {"score",bson.D{
+	    	{"event",e},
+		}}}
+	projection :=bson.D{
+		{"score",1},
+		{"_id",0},
+	}
+	var result Scores
+
+	err := c.FindOne(context.Background(), filter,options.FindOne().SetProjection(projection)).Decode(&result)
+	if err != nil {
+		return result
+	}
+	return result
+
+}
