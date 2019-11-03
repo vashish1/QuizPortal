@@ -96,8 +96,3 @@ func (e Event) After() bool {
 func (e Event) Before() bool {
 	return e.Starttime.Before(e.Timenow)
 }
-//
-////Updateuser updates the score of the user
-//func Updateuser(c mongo,name string){
-//
-//}
