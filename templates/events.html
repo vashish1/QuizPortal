@@ -49,12 +49,12 @@
                       <p>Live till </p>
                       <p>{{.Enddate}}</p>
                       <p>{{.Etime}}</p>
-                      <form method="GET" action="/quiz/">
+                      <form method="POST" action="/quiz/">
                          <div>
                           <input type="hidden" name="eventname" value="{{.Eventsname}}">
                          
                           <input type="submit" name="nothing" value="Join Now">
-                          
+                        
                           </div>
                          </form>
                 {{else if not (.Before) }}

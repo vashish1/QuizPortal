@@ -214,59 +214,64 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 func quizhandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("quiz chlra hai")
-    var a string
+	u := findusername(w, r)
+	user := database.Finddb(cl1, u)
+
 	qu = Quiz{
 		res:   w,
 		req:   r,
 		Index: 0,
 	}
-
-	// u:=findusername(w,r)
-	// user:=database.Finddb(cl1,u)
-
 	switch r.Method {
-
-	case "GET":
-		fmt.Println("1level",level)
-		a = r.FormValue("eventname")
-		// for _,b:=range user.Score{
-		// 	if b.Event==a{
-		// 		level=b.Userlevel
-		// 	}
-		// }
-		fmt.Print("getvalue", a)
-		qu.Eventname = a
-		qlist = database.Findfromquizdb(cl4, a)
-		qu.Q = qlist[level]
-		fmt.Print(qu.Q)
-		t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/quiz.html")
-		if err != nil {
-			log.Fatal("Could not parse template files:", err)
-		}
-		er := t.Execute(w, qu)
-		if er != nil {
-			log.Fatal("could not execute the files\n:", er)
-		}
-		fmt.Println("qu.Q.Answer%+v\n", qu)
 		
-	case "POST":
-		qu.Eventname = a
-		qlist = database.Findfromquizdb(cl4, a)
-		qu.Q = qlist[level]
-		ans = r.FormValue("answer")
-		fmt.Print("answer", ans)
-
-		fmt.Println("qu.Q.Answer%+v\n", qu)
-		if ans == qu.Q.Answer {
-			level++
-			fmt.Println("2level",level)
-			http.Redirect(w, r, "/quiz/", 302)
-		} else {
-			fmt.Println("gert")
+	case "POST": 
+	    {
+		a := r.FormValue("eventname")
+		if a != "" {
+			qu.Eventname = a
+			for _, b := range user.Score {
+				if b.Event == a {
+					level = b.Userlevel
+				}else{
+					level=0
+				}
+			}
+			qlist = database.Findfromquizdb(cl4, a)
+			qu.Q = qlist[level]
+			fmt.Print("Question is:",qu.Q)
+            fmt.Println("stop 1")
+			t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/quiz.html")
+			if err != nil {
+				log.Fatal("Could not parse template files:", err)
+			}
+			er := t.Execute(w, qu)
+			if er != nil {
+				log.Fatal("could not execute the files\n:", er)
+			}
+			fmt.Println("stop2")
+			ans = r.FormValue("answer")
+			fmt.Println("answer", ans)
+            fmt.Println("stop3")
+			fmt.Printf("qu.Q.Answer%+v\n", qu.Q.Answer)
+			if ans!=""{
+				if ans == qu.Q.Answer {
+					level++
+					database.Updateuserscores(cl1,u,a,10,level)
+					fmt.Println("2level", level)
+					http.Redirect(w, r, "/quiz/", 302)
+				} else {
+					fmt.Println("ans does not match")
+					http.Redirect(w, r, "/quiz/", 302)
+				}
+			}else{
+				fmt.Println("answer is null")
+			}
+			fmt.Println("stop 4")
+			
 		}
-		
 	}
-	fmt.Println("3level",level)
+
+}
 }
 
 //dashboard ....

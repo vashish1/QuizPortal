@@ -2,3 +2,4 @@ leaderboard
 Quizcompleted template
 javascripts to pop up messages like incorrect username
 Event added template
+if secure cookie is null show a pop up telling sign in to continue
