@@ -8,8 +8,82 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
+var cl1, cl2, cl3, cl4 *mongo.Collection
+var c *mongo.Client
+var eve Events
+var e empty
+var i int
+var qu Quiz
+var level int
+var qlist []database.Quizz
+var ans string
+
+type empty struct {
+	res http.ResponseWriter
+	req *http.Request
+}
+
+//Events ....
+type Events struct {
+	res   http.ResponseWriter
+	req   *http.Request
+	Elist []database.Event
+}
+
+//Quiz .......
+type Quiz struct {
+	res       http.ResponseWriter
+	req       *http.Request
+	Index     int
+	Eventname string
+	Q         database.Quizz
+}
+
+//Myevents stores the events of a particular organizer
+type Myevents struct {
+	res      http.ResponseWriter
+	req      *http.Request
+	username string
+	List     []database.Event
+}
+
+func main() {
+	r := NewRouter()
+
+	r.HandleFunc("/QuizPortal", About)
+	r.HandleFunc("/QuizPortal/signup", signuphandler).Methods("GET", "POST")
+	r.HandleFunc("/QuizPortal/login", loginhandler).Methods("GET", "POST")
+	r.HandleFunc("/QuizPortal/organizer", organizerhandler).Methods("GET", "POST")
+	r.HandleFunc("/QuizPortal/organizer/dashboard", orgdashboard).Methods("GET", "POST")
+	r.HandleFunc("/QuizPortal/login/dashboard", dashboard).Methods("GET")
+	r.HandleFunc("/QuizPortal/contact", Contacthandler)
+	r.HandleFunc("/QuizPortal/events", eventhandler).Methods("GET", "POST")
+	r.HandleFunc("/quiz/", quizhandler).Methods("GET", "POST")
+	r.HandleFunc("/QuizPortal/update/", updateevent).Methods("GET", "POST")
+	r.HandleFunc("/QuizPortal/deleteEvent/", deleteevent).Methods("GET", "POST")
+	r.HandleFunc("/QuizPortal/addEvent", addevent).Methods("GET", "POST")
+	r.HandleFunc("/QuizPortal/logout", logout)
+	http.Handle("/", r)
+	http.ListenAndServe(":8000", nil)
+}
+
+//NewRouter .....
+func NewRouter() *mux.Router {
+	r := mux.NewRouter().StrictSlash(true)
+	r.PathPrefix("/static").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
+	return r
+}
+
+func logout(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("logout chlra hai")
+	authenticate.ExpireSecureCookie(w, r)
+	authenticate.ExpireUserSession(w, r)
+	http.Redirect(w, r, "/QuizPortal/login", 302)
+}
 
 func signuphandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("yahaan aagya")
@@ -44,50 +118,58 @@ func signuphandler(w http.ResponseWriter, r *http.Request) {
 
 			u := database.Newuser(a, b, c, d, e, f, g)
 			user := *u
-			processsignupform(cl1, user, w, r)
+			processsignupform(user, w, r)
 
 		}
 	}
 }
 
 func loginhandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("yahaan aagya")
-	em := empty{
-		res: w,
-		req: r,
-	}
-
-	switch r.Method {
-
-	case "GET":
-		{
-
-			fmt.Println("yeh chlra hai")
-			t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/login.html")
-			if err != nil {
-				log.Fatal("Could not parse template files\n")
-			}
-			er := t.Execute(w, em)
-			if er != nil {
-				log.Fatal("could not execute the files\n")
-			}
-		}
-		log.Print("working")
-	case "POST":
-		{
-			fmt.Println(" lets see if it works ")
-			a := r.FormValue("username")
-			fmt.Println("username", a)
-			user := database.Finddb(cl1, a)
-			if user.Username != "" {
-				processloginform(cl1, user, w, r)
-			} else {
-				http.Redirect(w, r, "/QuizPortal/login", 302)
-			}
-
+	fmt.Println("login mein aagya")
+	x, _ := authenticate.ReadSecureCookieValues(w, r)
+	if x == nil {
+		em := empty{
+			res: w,
+			req: r,
 		}
 
+		switch r.Method {
+
+		case "GET":
+			{
+
+				fmt.Println("yeh chlra hai")
+				t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/login.html")
+				if err != nil {
+					log.Fatal("Could not parse template files\n")
+				}
+				er := t.Execute(w, em)
+				if er != nil {
+					log.Fatal("could not execute the files\n")
+				}
+			}
+			log.Print("working")
+		case "POST":
+			{
+				fmt.Println(" lets see if it works ")
+				a := r.FormValue("username")
+				b := r.FormValue("password")
+				fmt.Println("username", a)
+				user := database.Finddb(cl1, a)
+				if user.PasswordHash == database.SHA256ofstring(b) {
+					processloginform(user, w, r)
+				} else {
+					http.Redirect(w, r, "/QuizPortal/login", 302)
+				}
+
+			}
+
+		}
+
+	} else {
+		http.Redirect(w, r, "/QuizPortal/login/dashboard", 302)
 	}
+
 }
 
 func organizerhandler(w http.ResponseWriter, r *http.Request) {
@@ -117,9 +199,10 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 		{
 			fmt.Println(" lets see if it works ")
 			a := r.FormValue("username")
+			b := r.FormValue("password")
 			user := database.Findorgdb(cl2, a)
-			if user.Username != "" {
-				processorgloginform(cl1, user, w, r)
+			if user.PasswordHash == database.SHA256ofstring(b) {
+				processorgloginform(user, w, r)
 			} else {
 				http.Redirect(w, r, "/QuizPortal/organizer", 302)
 			}
@@ -129,27 +212,61 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func quizhandler(w http.ResponseWriter, r *http.Request) {
+
 	fmt.Println("quiz chlra hai")
-	re := r.FormValue("eventname")
-	fmt.Println("eventname:", re)
-	Qlist := database.Findfromquizdb(cl4, re)
-	qu := Quiz{
-		res:       w,
-		req:       r,
-		Index:     0,
-		Eventname: re,
-	}
-	var i int
-	i = 0
-	for i < len(Qlist) {
-		qu.Q = Qlist[i]
-		rendertemplate(w, "C:/Users/yashi/go/src/QuizPortal/templates/quiz.html", qu)
-		ans := r.FormValue("answer")
-		if ans == qu.Q.Answer {
-			i++
-		}
+    var a string
+	qu = Quiz{
+		res:   w,
+		req:   r,
+		Index: 0,
 	}
 
+	// u:=findusername(w,r)
+	// user:=database.Finddb(cl1,u)
+
+	switch r.Method {
+
+	case "GET":
+		fmt.Println("1level",level)
+		a = r.FormValue("eventname")
+		// for _,b:=range user.Score{
+		// 	if b.Event==a{
+		// 		level=b.Userlevel
+		// 	}
+		// }
+		fmt.Print("getvalue", a)
+		qu.Eventname = a
+		qlist = database.Findfromquizdb(cl4, a)
+		qu.Q = qlist[level]
+		fmt.Print(qu.Q)
+		t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/quiz.html")
+		if err != nil {
+			log.Fatal("Could not parse template files:", err)
+		}
+		er := t.Execute(w, qu)
+		if er != nil {
+			log.Fatal("could not execute the files\n:", er)
+		}
+		fmt.Println("qu.Q.Answer \n", qu)
+		
+	case "POST":
+		qu.Eventname = a
+		qlist = database.Findfromquizdb(cl4, a)
+		qu.Q = qlist[level]
+		ans = r.FormValue("answer")
+		fmt.Print("answer", ans)
+
+		fmt.Println("qu.Q.Answer\n", qu)
+		if ans == qu.Q.Answer {
+			level++
+			fmt.Println("2level",level)
+			http.Redirect(w, r, "/quiz/", 302)
+		} else {
+			fmt.Println("gert")
+		}
+		
+	}
+	fmt.Println("3level",level)
 }
 
 //dashboard ....
@@ -203,14 +320,15 @@ func Contacthandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func processsignupform(cl *mongo.Collection, U database.User, w http.ResponseWriter, r *http.Request) {
-	t := database.Findfromuserdb(cl, U.Username)
+func processsignupform(U database.User, w http.ResponseWriter, r *http.Request) {
+	database.Insertintouserdb(cl1, U)
+	t := database.Findfromuserdb(cl1, U.Username)
 	if t == true {
-		processloginform(cl, U, w, r)
+		processloginform(U, w, r)
 	}
 }
 
-func processloginform(cl *mongo.Collection, U database.User, w http.ResponseWriter, r *http.Request) {
+func processloginform(U database.User, w http.ResponseWriter, r *http.Request) {
 	sessionID := database.GenerateUUID()
 	rr := authenticate.CreateSecureCookie(U, sessionID, w, r)
 	if rr != nil {
@@ -223,7 +341,7 @@ func processloginform(cl *mongo.Collection, U database.User, w http.ResponseWrit
 	http.Redirect(w, r, "/QuizPortal/login/dashboard", 302)
 
 }
-func processorgloginform(cl *mongo.Collection, U database.Organizer, w http.ResponseWriter, r *http.Request) {
+func processorgloginform(U database.Organizer, w http.ResponseWriter, r *http.Request) {
 	sessionID := database.GenerateUUID()
 	rr := authenticate.CreateSecureorgCookie(U, sessionID, w, r)
 	if rr != nil {
@@ -241,8 +359,9 @@ func processorgloginform(cl *mongo.Collection, U database.Organizer, w http.Resp
 func eventhandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("event chlra hai")
 	eve = Events{
-		res:   w,
-		req:   r,
+		res: w,
+		req: r,
+
 		Elist: database.Findfromeventdb(cl3),
 	}
 	fmt.Println(eve.Elist)
@@ -254,6 +373,7 @@ func eventhandler(w http.ResponseWriter, r *http.Request) {
 	if er != nil {
 		log.Fatal("could not execute the files\n:", er)
 	}
+
 }
 func init() {
 	cl1, cl2, cl3, cl4, c = database.Createdb()
@@ -281,7 +401,7 @@ func (e Myevents) Checksession() bool {
 func (e Events) Usertype() bool {
 	res, err := authenticate.ReadSecureCookieValues(e.res, e.req)
 	fmt.Println(res)
-	if err != nil {
+	if err == nil {
 		st := res["username"]
 		fmt.Println(st)
 		y := database.Findfromorganizerdb(cl2, st)
@@ -315,7 +435,7 @@ func (em empty) Checksession() bool {
 //Usertype defines thetype of user
 func (q Quiz) Usertype() bool {
 	res, err := authenticate.ReadSecureCookieValues(q.res, q.req)
-	if err != nil {
+	if err == nil {
 		st := res["username"]
 		fmt.Println(st)
 		y := database.Findfromorganizerdb(cl2, st)
@@ -328,7 +448,7 @@ func (q Quiz) Usertype() bool {
 //Usertype defines thetype of user
 func (em empty) Usertype() bool {
 	res, err := authenticate.ReadSecureCookieValues(em.res, em.req)
-	if err != nil {
+	if err == nil {
 		st := res["username"]
 		fmt.Println(st)
 		y := database.Findfromorganizerdb(cl2, st)
@@ -338,25 +458,28 @@ func (em empty) Usertype() bool {
 	return false
 }
 
-func rendertemplate(w http.ResponseWriter, name string, data Quiz) {
-	t, err := template.ParseFiles(name)
-	if err != nil {
-		log.Fatal("Could not parse template files:", err)
-	}
-	er := t.Execute(w, data)
-	if er != nil {
-		log.Fatal("could not execute the files\n:", er)
-	}
-}
+// func rendertemplate(w http.ResponseWriter, name string, data Quiz) {
+// 	t, err := template.ParseFiles(name)
+// 	if err != nil {
+// 		log.Fatal("Could not parse template files:", err)
+// 	}
+// 	er := t.Execute(w, data)
+// 	if er != nil {
+// 		log.Fatal("could not execute the files\n:", er)
+// 	}
+// }
 
 func orgdashboard(w http.ResponseWriter, r *http.Request) {
 	x := findusername(w, r)
+	fmt.Println("x", x)
 	my := Myevents{
 		res:      w,
 		req:      r,
 		username: x,
 		List:     findorgevents(x),
 	}
+	fmt.Println("my events list:", my.List)
+
 	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/orgdashboard.html")
 	if err != nil {
 		log.Fatal("Could not parse template files:", err)
@@ -374,6 +497,7 @@ func findusername(w http.ResponseWriter, r *http.Request) string {
 
 		fmt.Println("the error while finding username:", err)
 	}
+
 	st := res["username"]
 	return st
 }
@@ -381,11 +505,18 @@ func findusername(w http.ResponseWriter, r *http.Request) string {
 func findorgevents(s string) []database.Event {
 	var result []database.Event
 	org := database.Findorgdb(cl2, s)
+	fmt.Println("org database:", org)
+
 	var i int
 	for i = 0; i < len(org.Events); i++ {
 		eve := org.Events[i]
-		e := database.Findevent(cl2, eve)
-		result = append(result, e)
+		fmt.Println("eve:", eve)
+		e := database.Findevent(cl3, eve)
+		fmt.Println("event:", e)
+		if e.Eventdescription != "" {
+			result = append(result, e)
+		}
+
 	}
 	return result
 }
@@ -425,7 +556,7 @@ func addevent(w http.ResponseWriter, r *http.Request) {
 			f := r.FormValue("endtime")
 			fmt.Println(a, b, c, d, e, f)
 
-			u := database.NewEvent(a, b, c, e, d, f)
+			u := database.NewEvent(a, b, c, d, e, f)
 			database.Insertintoeventdb(cl3, u)
 			fmt.Println("Event inserted:", u)
 			s := findusername(w, r)
@@ -437,14 +568,22 @@ func addevent(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteevent(w http.ResponseWriter, r *http.Request) {
-	res := r.FormValue("eventname")
-	fmt.Println(res)
-	database.Deleteevent(cl3, res)
+	switch r.Method {
+	case "POST":
+		re := r.FormValue("eventname")
+		fmt.Println("eventname:", re)
+		database.Deleteevent(cl3, re)
+	}
+
 	http.Redirect(w, r, "/QuizPortal/organizer/dashboard", 302)
 }
 
 func updateevent(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("question add")
+	em := empty{
+		res: w,
+		req: r,
+	}
 
 	switch r.Method {
 
@@ -456,7 +595,7 @@ func updateevent(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Fatal("Could not parse template files:", err)
 			}
-			er := t.Execute(w, "")
+			er := t.Execute(w, em)
 			if er != nil {
 				log.Fatal("could not execute the files\n")
 			}
@@ -465,13 +604,13 @@ func updateevent(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		{
 			fmt.Println(" lets see if it works ")
-
-			eve := r.FormValue("eventname")
+			re := r.FormValue("eventname")
+			fmt.Println("eventname:", re)
 			t := r.FormValue("title")
 			q := r.FormValue("question")
 			a := r.FormValue("answer")
 			Q := database.Quizz{
-				Event:       eve,
+				Event:       re,
 				Title:       t,
 				Description: q,
 				Answer:      a,
@@ -480,4 +619,4 @@ func updateevent(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/QuizPortal/update/", 302)
 		}
 	}
-}
+}  

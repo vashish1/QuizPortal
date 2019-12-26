@@ -23,7 +23,14 @@ type User struct {
 	PasswordHash      string
 	Timestampcreated  int64
 	Timestampmodified int64
-	Eventids          []string
+	Score             []Scores
+}
+
+//Scores ....
+type Scores struct {
+	Event  string
+	Points int
+	Userlevel int
 }
 
 //Newuser .....
@@ -32,7 +39,7 @@ func Newuser(username string, email string, branch string, year string, college 
 	Password := SHA256ofstring(password)
 	now := time.Now()
 	Unixtimestamp := now.Unix()
-	U := User{UUID: GenerateUUID(), Username: username, Email: email, Branch: branch, Year: year, College: college, Contact: contact, PasswordHash: Password, Timestampcreated: Unixtimestamp, Timestampmodified: Unixtimestamp, Eventids: []string{}}
+	U := User{UUID: GenerateUUID(), Username: username, Email: email, Branch: branch, Year: year, College: college, Contact: contact, PasswordHash: Password, Timestampcreated: Unixtimestamp, Timestampmodified: Unixtimestamp, Score: []Scores{}}
 	return &U
 }
 
@@ -62,24 +69,18 @@ type Organizer struct {
 	Events            []string
 }
 
-
-
 //NewEvent ........
 func NewEvent(a string, b string, c string, d string, e string, f string) Event {
 	var eve Event
 	eve.Eventsname = a
 	eve.Eventdescription = b
-	start := c + " at " + d
-	end := e + " at " + f
+	start := c + " at " + e
+	end := d + " at " + f
 	fmt.Println(start, end)
-	eve.Startdate=c
-	eve.Enddate=d
-	eve.Stime=e
-	eve.Etime=f
-	t := time.Now()
-	t1 := t.Format("2006-Jan-02 at 03:04pm")
-	t2, _ := time.Parse("2006-Jan-02 at 03:04pm", t1)
-	eve.Timenow = t2
+	eve.Startdate = c
+	eve.Enddate = d
+	eve.Stime = e
+	eve.Etime = f
 	eve.Starttime, _ = time.Parse("2006-Jan-02 at 03:04pm", start)
 	eve.Endtime, _ = time.Parse("2006-Jan-02 at 03:04pm", end)
 	i++

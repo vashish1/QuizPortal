@@ -88,7 +88,7 @@ func Findfromorganizerdb(organizercollection *mongo.Collection, st string) bool 
 
 }
 
-// err = client.Disconnect(context.TODO())
+//err = client.Disconnect(context.TODO())
 
 // if err != nil {
 // 	log.Fatal(err)

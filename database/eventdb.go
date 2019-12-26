@@ -17,10 +17,10 @@ import (
 type Event struct {
 	Eventsname       string
 	Eventdescription string
-	Startdate string
-	Enddate string
-	Stime string
-	Etime string
+	Startdate        string
+	Enddate          string
+	Stime            string
+	Etime            string
 	Starttime        time.Time
 	Endtime          time.Time
 	Timenow          time.Time
@@ -61,7 +61,10 @@ func Findfromeventdb(collection *mongo.Collection) []Event {
 		if err != nil {
 			log.Fatal("decoding error:", err)
 		}
-
+		t:=time.Now()
+		t1 := t.Format("2006-Jan-02 at 03:04pm")
+		t2, _ := time.Parse("2006-Jan-02 at 03:04pm", t1)
+		elem.Timenow=t2
 		results = append(results, elem)
 	}
 
