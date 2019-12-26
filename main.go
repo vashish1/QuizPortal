@@ -247,7 +247,7 @@ func quizhandler(w http.ResponseWriter, r *http.Request) {
 		if er != nil {
 			log.Fatal("could not execute the files\n:", er)
 		}
-		fmt.Println("qu.Q.Answer \n", qu)
+		fmt.Println("qu.Q.Answer%+v\n", qu)
 		
 	case "POST":
 		qu.Eventname = a
@@ -256,7 +256,7 @@ func quizhandler(w http.ResponseWriter, r *http.Request) {
 		ans = r.FormValue("answer")
 		fmt.Print("answer", ans)
 
-		fmt.Println("qu.Q.Answer\n", qu)
+		fmt.Println("qu.Q.Answer%+v\n", qu)
 		if ans == qu.Q.Answer {
 			level++
 			fmt.Println("2level",level)
@@ -619,4 +619,4 @@ func updateevent(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/QuizPortal/update/", 302)
 		}
 	}
-}  
+}

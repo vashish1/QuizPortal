@@ -64,7 +64,7 @@ func Findfromeventdb(collection *mongo.Collection) []Event {
 		t:=time.Now()
 		t1 := t.Format("2006-Jan-02 at 03:04pm")
 		t2, _ := time.Parse("2006-Jan-02 at 03:04pm", t1)
-		elem.Timenow=t2
+        elem.Timenow=t2
 		results = append(results, elem)
 	}
 

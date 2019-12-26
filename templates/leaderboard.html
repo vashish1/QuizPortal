@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		QuizPortal
+	</title>
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/leaderboard.css">
+</head>
+<body>
+<div class="box">
+	<div class="top">
+		<img src="/static/img/mmil_logo.jpg" width="50px"><a href="/dashboard">MMIL</a>
+		{{ if .Checksession}}
+		<button onclick="logout()" class="button">LogOut</button>
+		{{else}}
+		<button onclick="login()">Log In</button>
+		<button class="signn" onclick="signup()">Sign Up</button>
+		{{end}}
+	</div>
+	<div class="center">
+		<div class="info-1">
+			<a href='/QuizPortal/events' class="event">Live Events</a>
+		</div>
+		<form method="POST" action="/quiz/">
+				<input type="hidden" name="event_name" value="{{ event_name }}">
+				<button type="submit" class="btn1">{{ event_name }}</button>
+		</form>	
+		<div class="info-1">
+			<a href='/contact' class="contact">contact</a>
+		</div>
+		<!-- <a href="#">About</a> -->
+	</div>
+	<div class="bottom">
+		<p>LeaderBoard</p>
+		<div class="leaderboard">
+	     {{ range .Score}}
+		<div class="block">
+			<div class="left">{{ .Username }}</div>
+			<div class="right">{{ Points }}</div>
+		</div>
+		{{end}}
+	</div>
+	</div>
+</div>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -84,11 +84,11 @@ func Findfromorganizerdb(organizercollection *mongo.Collection, st string) bool 
 		fmt.Println(err)
 		return false
 	}
-    return true
+	return true
 
 }
 
-//err = client.Disconnect(context.TODO())
+// err = client.Disconnect(context.TODO())
 
 // if err != nil {
 // 	log.Fatal(err)
@@ -121,11 +121,8 @@ func Findorgdb(c *mongo.Collection, s string) Organizer {
 
 //Updateorg updates the organizer database
 func Updateorg(c *mongo.Collection, o string, s string) {
-
-	filter := bson.D{{"username", o}}
-
-	update := bson.M{
-		"$push":bson.M{"events":s}}
+	filter := bson.D{primitive.E{Key: "username", Value: o}}
+	update := bson.M{"$push": bson.M{"events": s}}
 
 	updateResult, err := c.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
@@ -133,4 +130,49 @@ func Updateorg(c *mongo.Collection, o string, s string) {
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+}
+
+//Updateuserscores updates the score of the user
+func Updateuserscores(c *mongo.Collection,username string,ename string,p int,l int){
+	filter := bson.D{
+		{"username",username},
+		{"score",bson.D{
+		{"event",ename},
+	}}}
+    update :=bson.D{{"$set",bson.D{
+    	{"score.event",ename},
+    	{"score.userlevel",l},
+	},
+    },
+    {"$inc",bson.D{
+    	{"score.points",p},
+    },
+	}}
+	updateResult, err := c.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+}
+
+//Findscore finds the score of a user for a particular event
+func Findscore(c *mongo.Collection,u string,e string) Scores{
+	filter := bson.D{
+		{"username",u},
+	    {"score",bson.D{
+	    	{"event",e},
+		}}}
+	projection :=bson.D{
+		{"score",1},
+		{"_id",0},
+	}
+	var result Scores
+
+	err := c.FindOne(context.Background(), filter,options.FindOne().SetProjection(projection)).Decode(&result)
+	if err != nil {
+		return result
+	}
+	return result
+
 }

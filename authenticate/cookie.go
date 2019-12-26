@@ -91,7 +91,6 @@ func ExpireSecureCookie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Accel-Expires", "0")
 
 	http.SetCookie(w, cookie)
-	http.Redirect(w, r, "/login", 301)
 }
 
 func init() {
@@ -127,5 +126,3 @@ func Getcookievalues(w http.ResponseWriter, r *http.Request) Values {
 	fmt.Print(er)
 	return value
 }
-
-
