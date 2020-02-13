@@ -32,7 +32,7 @@ func Insertintoquizdb(usercollection *mongo.Collection, q Quizz) {
 
 //Findfromquizdb finds the required data
 func Findfromquizdb(collection *mongo.Collection, st string) []Quizz {
-	// Pass these options to the Find method
+		// Pass these options to the Find method
 	findOptions := options.Find()
 	fmt.Println("st:", st)
 

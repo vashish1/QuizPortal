@@ -38,7 +38,6 @@ type Events struct {
 type Quiz struct {
 	res       http.ResponseWriter
 	req       *http.Request
-	Index     int
 	Eventname string
 	Q         database.Quizz
 }
@@ -67,6 +66,7 @@ func main() {
 	r.HandleFunc("/QuizPortal/deleteEvent/", deleteevent).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/addEvent", addevent).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/logout", logout)
+    r.HandleFunc("/answer",answer).Methods("POST")
 	http.Handle("/", r)
 	http.ListenAndServe(":8000", nil)
 }
@@ -211,68 +211,82 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func quizhandler(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Println("quiz chlra hai")
-	u := findusername(w, r)
-	user := database.Finddb(cl1, u)
-
-	qu = Quiz{
-		res:   w,
-		req:   r,
-		Index: 0,
+func renderQuizTemplate(data Quiz){
+	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/quiz.html")
+	fmt.Println("anushiv testing 3")
+	if err != nil {
+		log.Fatal("Could not parse template files:", err)
 	}
-	switch r.Method {
+	er := t.Execute(data.res, data)
+	if er != nil {
+		log.Fatal("could not execute the files\n:", er)
+	}
+}
+
+func quizhandler(w http.ResponseWriter, r *http.Request) {
+	qu.res=w
+	qu.req=r
+	var level int
+	var event string
+
+	username:=findusername(w,r)
+	user:=database.Finddb(cl1,username)
+	
+	if r.Header.Get("Event")==""{
+		event=r.FormValue("eventname")
 		
-	case "POST": 
-	    {
-		a := r.FormValue("eventname")
-		if a != "" {
-			qu.Eventname = a
-			for _, b := range user.Score {
-				if b.Event == a {
-					level = b.Userlevel
-				}else{
-					level=0
-				}
+		database.AddEvent(cl1,username,event)
+	}else{
+        event=r.Header.Get("Event")
+	}
+
+	
+	if event!=""{
+		qu.Eventname=event
+		
+	    for _,score:=range user.Score{
+		   if score.Event==event{
+			level=score.Userlevel
+		    }
+	    }
+	}
+	
+	
+	qlist:=database.Findfromquizdb(cl4,event)
+	qu.Q=qlist[level]
+    renderQuizTemplate(qu)
+	fmt.Println("Part 1")
+
+
+
+}
+
+func answer(w http.ResponseWriter,r *http.Request) {
+		fmt.Println("Part 2")
+		var level int
+		event:=r.FormValue("eventname")
+	   if r.Header.Get("Event")==""{
+		r.Header.Set("Event",event)
+	    }
+		username:=findusername(w,r)
+		user:=database.Finddb(cl1,username)
+		
+	    for _,score:=range user.Score{
+            if score.Event==event{
+				level=score.Userlevel
 			}
-			qlist = database.Findfromquizdb(cl4, a)
-			qu.Q = qlist[level]
-			fmt.Print("Question is:",qu.Q)
-            fmt.Println("stop 1")
-			t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/quiz.html")
-			if err != nil {
-				log.Fatal("Could not parse template files:", err)
-			}
-			er := t.Execute(w, qu)
-			if er != nil {
-				log.Fatal("could not execute the files\n:", er)
-			}
-			fmt.Println("stop2")
-			ans = r.FormValue("answer")
-			fmt.Println("answer", ans)
-            fmt.Println("stop3")
-			fmt.Printf("qu.Q.Answer%+v\n", qu.Q.Answer)
-			if ans!=""{
-				if ans == qu.Q.Answer {
-					level++
-					database.Updateuserscores(cl1,u,a,10,level)
-					fmt.Println("2level", level)
-					http.Redirect(w, r, "/quiz/", 302)
-				} else {
-					fmt.Println("ans does not match")
-					http.Redirect(w, r, "/quiz/", 302)
-				}
-			}else{
-				fmt.Println("answer is null")
-			}
-			fmt.Println("stop 4")
-			
+		}
+		qlist:=database.Findfromquizdb(cl4,event)
+		Q:=qlist[level]
+		ans:=r.FormValue("answer")
+		if ans!=Q.Answer{
+			fmt.Println("Answer is not correct")
+		}else{
+			fmt.Println("answer is correct")
+			database.Updateuserscores(cl4,username,event,10,level+1)
+			http.Redirect(w,r,"/quiz",302)
 		}
 	}
-
-}
-}
 
 //dashboard ....
 func dashboard(w http.ResponseWriter, r *http.Request) {
@@ -320,6 +334,7 @@ func Contacthandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Could not parse template files\n")
 	}
 	er := t.Execute(w, em)
+
 	if er != nil {
 		log.Fatal("could not execute the files\n")
 	}

@@ -176,3 +176,28 @@ func Findscore(c *mongo.Collection,u string,e string) Scores{
 	return result
 
 }
+
+//AddEvent adds events to the user database 
+func AddEvent(c *mongo.Collection,u,e string){
+	filter := bson.D{
+		{"username",u},
+	}
+	var score Scores
+	
+		score.Event=e
+		score.Userlevel=0
+		score.Points=0
+	
+	update:=bson.M{
+	       "$push":bson.M{
+			   "scores":score,
+		   },
+	   }
+	   updateResult, err := c.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+}
+
