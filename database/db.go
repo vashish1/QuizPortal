@@ -148,9 +148,14 @@ func Updateuserscores(c *mongo.Collection,username string,ename string,p int,l i
     	{"score.points",p},
     },
 	}}
+	
+	var result User
+
+	err1 := c.FindOne(context.TODO(), filter).Decode(&result)
+    fmt.Println(err1)
 	updateResult, err := c.UpdateOne(context.Background(), filter, update)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Print(err)
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
@@ -188,11 +193,13 @@ func AddEvent(c *mongo.Collection,u,e string){
 		score.Userlevel=0
 		score.Points=0
 	
-	update:=bson.M{
+	  update:=bson.M{
 	       "$push":bson.M{
-			   "scores":score,
+			   "score":score,
 		   },
 	   }
+		user:=Finddb(c,u)
+		fmt.Println(user)
 	   updateResult, err := c.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		log.Fatal(err)

@@ -22,6 +22,8 @@ var level int
 var qlist []database.Quizz
 var ans string
 
+var event string
+
 type empty struct {
 	res http.ResponseWriter
 	req *http.Request
@@ -227,20 +229,12 @@ func quizhandler(w http.ResponseWriter, r *http.Request) {
 	qu.res=w
 	qu.req=r
 	var level int
-	var event string
 
 	username:=findusername(w,r)
 	user:=database.Finddb(cl1,username)
-	
-	if r.Header.Get("Event")==""{
+	if event==""{
 		event=r.FormValue("eventname")
-		
-		database.AddEvent(cl1,username,event)
-	}else{
-        event=r.Header.Get("Event")
 	}
-
-	
 	if event!=""{
 		qu.Eventname=event
 		
@@ -250,24 +244,18 @@ func quizhandler(w http.ResponseWriter, r *http.Request) {
 		    }
 	    }
 	}
-	
-	
 	qlist:=database.Findfromquizdb(cl4,event)
 	qu.Q=qlist[level]
     renderQuizTemplate(qu)
 	fmt.Println("Part 1")
-
-
-
 }
 
 func answer(w http.ResponseWriter,r *http.Request) {
 		fmt.Println("Part 2")
 		var level int
 		event:=r.FormValue("eventname")
-	   if r.Header.Get("Event")==""{
-		r.Header.Set("Event",event)
-	    }
+	   
+		fmt.Print(r.Header)
 		username:=findusername(w,r)
 		user:=database.Finddb(cl1,username)
 		
@@ -283,7 +271,7 @@ func answer(w http.ResponseWriter,r *http.Request) {
 			fmt.Println("Answer is not correct")
 		}else{
 			fmt.Println("answer is correct")
-			database.Updateuserscores(cl4,username,event,10,level+1)
+			database.Updateuserscores(cl1,username,event,10,level+1)
 			http.Redirect(w,r,"/quiz",302)
 		}
 	}
