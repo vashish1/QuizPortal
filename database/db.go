@@ -102,6 +102,7 @@ func Finddb(c *mongo.Collection, s string) User {
 
 	err := c.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
+		fmt.Print(err)
 		return result
 	}
 	return result
@@ -133,32 +134,34 @@ func Updateorg(c *mongo.Collection, o string, s string) {
 }
 
 //Updateuserscores updates the score of the user
-func Updateuserscores(c *mongo.Collection,username string,ename string,p int,l int){
+func Updateuserscores(c *mongo.Collection,username string,ename string,p int,l int)bool{
 	filter := bson.D{
-		{"username",username},
+		primitive.E{Key:"username",Value:username},
 		{"score",bson.D{
-		{"event",ename},
-	}}}
-    update :=bson.D{{"$set",bson.D{
-    	{"score.event",ename},
-    	{"score.userlevel",l},
-	},
-    },
-    {"$inc",bson.D{
-    	{"score.points",p},
-    },
-	}}
+			{"$elemMatch", bson.D{
+				{"event", ename},
+			}},
+			},},}
 	
-	var result User
+    update :=bson.D{{"$set",bson.D{
+		{"score.$.userlevel",l},
 
-	err1 := c.FindOne(context.TODO(), filter).Decode(&result)
-    fmt.Println(err1)
+	},
+	},
+	{
+		"$inc",bson.D{
+			{"score.$.points",p},
+		},
+	},
+    }
 	updateResult, err := c.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		fmt.Print(err)
+		return false
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+	return true
 }
 
 //Findscore finds the score of a user for a particular event

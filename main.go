@@ -13,16 +13,15 @@ import (
 )
 
 var cl1, cl2, cl3, cl4 *mongo.Collection
-var c *mongo.Client
 var eve Events
 var e empty
-var i int
 var qu Quiz
 var level int
 var qlist []database.Quizz
 var ans string
-
+var flag bool
 var event string
+
 
 type empty struct {
 	res http.ResponseWriter
@@ -68,7 +67,8 @@ func main() {
 	r.HandleFunc("/QuizPortal/deleteEvent/", deleteevent).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/addEvent", addevent).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/logout", logout)
-    r.HandleFunc("/answer",answer).Methods("POST")
+	r.HandleFunc("/answer",answer).Methods("POST")
+	r.HandleFunc("/quiz/completed",completed)
 	http.Handle("/", r)
 	http.ListenAndServe(":8000", nil)
 }
@@ -78,6 +78,22 @@ func NewRouter() *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
 	r.PathPrefix("/static").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 	return r
+}
+
+func completed(w http.ResponseWriter,r *http.Request){
+	var c empty
+	c.res=w
+	c.req=r
+	fmt.Println("yeh chlra hai")
+	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/completed.html")
+	if err != nil {
+		log.Fatal("Could not parse template files\n")
+	}
+	er := t.Execute(w, c)
+	if er != nil {
+		fmt.Print(er)
+		log.Fatal("could not execute the files\n")
+	}
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
@@ -163,15 +179,11 @@ func loginhandler(w http.ResponseWriter, r *http.Request) {
 				} else {
 					http.Redirect(w, r, "/QuizPortal/login", 302)
 				}
-
 			}
-
 		}
-
 	} else {
 		http.Redirect(w, r, "/QuizPortal/login/dashboard", 302)
 	}
-
 }
 
 func organizerhandler(w http.ResponseWriter, r *http.Request) {
@@ -232,30 +244,41 @@ func quizhandler(w http.ResponseWriter, r *http.Request) {
 
 	username:=findusername(w,r)
 	user:=database.Finddb(cl1,username)
-	if event==""{
+	fmt.Print("oye")
+	if flag==true{
+		flag=false
+	}else if event!=""&&event!=(r.FormValue("eventname")){
+		event=r.FormValue("eventname")
+		database.AddEvent(cl1,username,event)
+	}else if event==""&&flag==false{
 		event=r.FormValue("eventname")
 	}
+	fmt.Print("oye")
 	if event!=""{
+		fmt.Print("ewent",event)
 		qu.Eventname=event
-		
 	    for _,score:=range user.Score{
 		   if score.Event==event{
 			level=score.Userlevel
-		    }
-	    }
+			}
+			
+		}
+		fmt.Print("level",level)
+		if level==2{
+			http.Redirect(w,r,"/quiz/completed",302)
+		}else{
+			qlist:=database.Findfromquizdb(cl4,event)
+			qu.Q=qlist[level]
+			renderQuizTemplate(qu)
+			fmt.Println("Part 1")
+		}
 	}
-	qlist:=database.Findfromquizdb(cl4,event)
-	qu.Q=qlist[level]
-    renderQuizTemplate(qu)
-	fmt.Println("Part 1")
 }
 
 func answer(w http.ResponseWriter,r *http.Request) {
 		fmt.Println("Part 2")
 		var level int
 		event:=r.FormValue("eventname")
-	   
-		fmt.Print(r.Header)
 		username:=findusername(w,r)
 		user:=database.Finddb(cl1,username)
 		
@@ -271,15 +294,14 @@ func answer(w http.ResponseWriter,r *http.Request) {
 			fmt.Println("Answer is not correct")
 		}else{
 			fmt.Println("answer is correct")
-			database.Updateuserscores(cl1,username,event,10,level+1)
+			flag=database.Updateuserscores(cl1,username,event,10,level+1)
 			http.Redirect(w,r,"/quiz",302)
 		}
 	}
 
 //dashboard ....
 func dashboard(w http.ResponseWriter, r *http.Request) {
-	value := authenticate.Getcookievalues(w, r)
-	fmt.Println(value)
+
 	em := empty{
 		res: w,
 		req: r,
@@ -384,7 +406,7 @@ func eventhandler(w http.ResponseWriter, r *http.Request) {
 
 }
 func init() {
-	cl1, cl2, cl3, cl4, c = database.Createdb()
+	cl1, cl2, cl3, cl4, _ = database.Createdb()
 }
 
 //Checksession checks  if session is present or not
@@ -465,17 +487,6 @@ func (em empty) Usertype() bool {
 	}
 	return false
 }
-
-// func rendertemplate(w http.ResponseWriter, name string, data Quiz) {
-// 	t, err := template.ParseFiles(name)
-// 	if err != nil {
-// 		log.Fatal("Could not parse template files:", err)
-// 	}
-// 	er := t.Execute(w, data)
-// 	if er != nil {
-// 		log.Fatal("could not execute the files\n:", er)
-// 	}
-// }
 
 func orgdashboard(w http.ResponseWriter, r *http.Request) {
 	x := findusername(w, r)
