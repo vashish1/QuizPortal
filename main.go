@@ -22,6 +22,10 @@ var ans string
 var flag bool
 var event string
 
+type letstruct struct{
+	Username string
+	Points int
+}
 
 type empty struct {
 	res http.ResponseWriter
@@ -51,6 +55,13 @@ type Myevents struct {
 	List     []database.Event
 }
 
+type leader struct{
+	res      http.ResponseWriter
+	req      *http.Request
+	List     []letstruct
+	Event    string
+}
+
 func main() {
 	r := NewRouter()
 
@@ -68,6 +79,7 @@ func main() {
 	r.HandleFunc("/QuizPortal/addEvent", addevent).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/logout", logout)
 	r.HandleFunc("/answer",answer).Methods("POST")
+	r.HandleFunc("/QuizPortal/leaderboard",leaderboard).Methods("POST")
 	r.HandleFunc("/quiz/completed",completed)
 	http.Handle("/", r)
 	http.ListenAndServe(":8000", nil)
@@ -236,6 +248,32 @@ func renderQuizTemplate(data Quiz){
 		log.Fatal("could not execute the files\n:", er)
 	}
 }
+func leaderboard(w http.ResponseWriter,r *http.Request){
+	 event:=r.FormValue("eventname")
+	 d:=database.Findscore(cl1,event)
+	 fmt.Println("data",d)
+	 var data []letstruct
+	 for _,user:=range d{
+		 var x letstruct
+		 x.Username=user.Username
+		 x.Points=user.Score[0].Points
+		 data=append(data,x)
+	 }
+	 var let leader
+	 let.res=w
+	 let.req=r
+	 let.List=data
+     let.Event=event
+	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/leaderboard.html")
+	fmt.Println(" testing leaderboard")
+	if err != nil {
+		log.Fatal("Could not parse template files:", err)
+	}
+	er := t.Execute(w, let)
+	if er != nil {
+		log.Fatal("could not execute the files\n:", er)
+	}
+}
 
 func quizhandler(w http.ResponseWriter, r *http.Request) {
 	qu.res=w
@@ -243,6 +281,10 @@ func quizhandler(w http.ResponseWriter, r *http.Request) {
 	var level int
 
 	username:=findusername(w,r)
+	x:=database.Findfromorganizerdb(cl2,username)
+	if x==true{
+		http.Redirect(w,r,"/QuizPortal/organizer/dashboard",302)
+	}
 	user:=database.Finddb(cl1,username)
 	fmt.Print("oye")
 	if flag==true{
@@ -452,7 +494,6 @@ func (q Quiz) Checksession() bool {
 	}
 	return false
 }
-
 //Checksession ....
 func (em empty) Checksession() bool {
 	res, err := authenticate.ReadSecureCookieValues(em.res, em.req)
@@ -462,9 +503,36 @@ func (em empty) Checksession() bool {
 	return false
 }
 
+
+
 //Usertype defines thetype of user
 func (q Quiz) Usertype() bool {
 	res, err := authenticate.ReadSecureCookieValues(q.res, q.req)
+	if err == nil {
+		st := res["username"]
+		fmt.Println(st)
+		y := database.Findfromorganizerdb(cl2, st)
+
+		return y
+	}
+	return false
+}
+
+
+//Checksession ....
+func (let leader) Checksession() bool {
+	res, err := authenticate.ReadSecureCookieValues(let.res, let.req)
+	if res != nil && err == nil {
+		return true
+	}
+	return false
+}
+
+
+
+//Usertype defines thetype of user
+func (let leader) Usertype() bool {
+	res, err := authenticate.ReadSecureCookieValues(let.res, let.req)
 	if err == nil {
 		st := res["username"]
 		fmt.Println(st)
@@ -583,7 +651,6 @@ func addevent(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/QuizPortal/organizer/dashboard", 302)
 		}
 	}
-
 }
 
 func deleteevent(w http.ResponseWriter, r *http.Request) {
@@ -639,3 +706,4 @@ func updateevent(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+	

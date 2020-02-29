@@ -80,3 +80,11 @@ if secure cookie is null show a pop up telling sign in to continue
 		}
 
 	}
+
+		<!-- <form method="POST" action="/quiz/">
+				<input type="hidden" name="eventname" value="{{ event_name }}">
+				<button type="submit" class="btn1">{{ eventname }}</button>
+		</form>	 -->
+
+		
+		<a href="#">About</a>

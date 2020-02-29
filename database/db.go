@@ -165,24 +165,42 @@ func Updateuserscores(c *mongo.Collection,username string,ename string,p int,l i
 }
 
 //Findscore finds the score of a user for a particular event
-func Findscore(c *mongo.Collection,u string,e string) Scores{
+func Findscore(c *mongo.Collection,e string) []User{
 	filter := bson.D{
-		{"username",u},
-	    {"score",bson.D{
-	    	{"event",e},
-		}}}
+		{"score", bson.D{
+			{"$elemMatch",bson.D{
+				{"event", e},
+			},	
+		}},
+	},
+}
 	projection :=bson.D{
-		{"score",1},
 		{"_id",0},
+		{"username",1},
+		{"score",1},
 	}
-	var result Scores
-
-	err := c.FindOne(context.Background(), filter,options.FindOne().SetProjection(projection)).Decode(&result)
+	var result []User
+	cur,err:=c.Find(context.Background(),filter,options.Find().SetProjection(projection))
+	
 	if err != nil {
-		return result
+		fmt.Println("the error is:", err)
 	}
-	return result
+	for cur.Next(context.TODO()) {
+		var elem User
+		err := cur.Decode(&elem)
+		if err != nil {
+			log.Fatal("decoding error:", err)
+		
+		}
+		result = append(result, elem)
+}
+if err := cur.Err(); err != nil {
+	fmt.Println("cursor error", err)
+}
 
+cur.Close(context.TODO())
+fmt.Println(result)
+return result
 }
 
 //AddEvent adds events to the user database 
@@ -190,6 +208,7 @@ func AddEvent(c *mongo.Collection,u,e string){
 	filter := bson.D{
 		{"username",u},
 	}
+
 	var score Scores
 	
 		score.Event=e
@@ -207,7 +226,6 @@ func AddEvent(c *mongo.Collection,u,e string){
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
 }
 
