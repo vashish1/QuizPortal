@@ -14,7 +14,7 @@ import (
 //Createdb creates a database
 func Createdb() (*mongo.Collection, *mongo.Collection, *mongo.Collection, *mongo.Collection, *mongo.Client) {
 
-	clientOptions := options.Client().ApplyURI("mongodb://34.254.96.240/:27017")
+	clientOptions := options.Client().ApplyURI("mongodb://34.254.96.240:27017")
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
