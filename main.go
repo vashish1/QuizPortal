@@ -97,7 +97,7 @@ func completed(w http.ResponseWriter,r *http.Request){
 	c.res=w
 	c.req=r
 	fmt.Println("yeh chlra hai")
-	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/completed.html")
+	t, err := template.ParseFiles("./templates/completed.html")
 	if err != nil {
 		log.Fatal("Could not parse template files\n")
 	}
@@ -124,7 +124,7 @@ func signuphandler(w http.ResponseWriter, r *http.Request) {
 		{
 
 			fmt.Println("yeh chlra hai")
-			t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/signup.html")
+			t, err := template.ParseFiles("./templates/signup.html")
 			if err != nil {
 				log.Fatal("Could not parse template files\n")
 			}
@@ -169,7 +169,7 @@ func loginhandler(w http.ResponseWriter, r *http.Request) {
 			{
 
 				fmt.Println("yeh chlra hai")
-				t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/login.html")
+				t, err := template.ParseFiles("./templates/login.html")
 				if err != nil {
 					fmt.Println("Could not parse template files\n",err)
 				}
@@ -211,7 +211,7 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 		{
 
 			fmt.Println("yeh chlra hai")
-			t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/orglogin.html")
+			t, err := template.ParseFiles("./templates/orglogin.html")
 			if err != nil {
 				log.Fatal("Could not parse template files\n")
 			}
@@ -238,7 +238,7 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func renderQuizTemplate(data Quiz){
-	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/quiz.html")
+	t, err := template.ParseFiles("./templates/quiz.html")
 	fmt.Println("anushiv testing 3")
 	if err != nil {
 		log.Fatal("Could not parse template files:", err)
@@ -264,7 +264,7 @@ func leaderboard(w http.ResponseWriter,r *http.Request){
 	 let.req=r
 	 let.List=data
      let.Event=event
-	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/leaderboard.html")
+	t, err := template.ParseFiles("./templates/leaderboard.html")
 	fmt.Println(" testing leaderboard")
 	if err != nil {
 		log.Fatal("Could not parse template files:", err)
@@ -349,7 +349,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 		req: r,
 	}
 	fmt.Println("yeh chlra hai")
-	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/dashboard.html")
+	t, err := template.ParseFiles("./templates/dashboard.html")
 	if err != nil {
 		log.Fatal("Could not parse template files\n")
 	}
@@ -363,7 +363,7 @@ func dashboard(w http.ResponseWriter, r *http.Request) {
 //About shows the information about the portal
 func About(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("about chlra hai")
-	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/dashboard.html")
+	t, err := template.ParseFiles("./templates/about.html")
 	if err != nil {
 		fmt.Println("Could not parse template files\n",err)
 	}
@@ -381,7 +381,7 @@ func Contacthandler(w http.ResponseWriter, r *http.Request) {
 		req: r,
 	}
 
-	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/contact.html")
+	t, err := template.ParseFiles("./templates/contact.html")
 	if err != nil {
 		log.Fatal("Could not parse template files\n")
 	}
@@ -437,7 +437,7 @@ func eventhandler(w http.ResponseWriter, r *http.Request) {
 		Elist: database.Findfromeventdb(cl3),
 	}
 	fmt.Println(eve.Elist)
-	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/events.html")
+	t, err := template.ParseFiles("./templates/events.html")
 	if err != nil {
 		log.Fatal("Could not parse template files:", err)
 	}
@@ -567,7 +567,7 @@ func orgdashboard(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("my events list:", my.List)
 
-	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/orgdashboard.html")
+	t, err := template.ParseFiles("./templates/orgdashboard.html")
 	if err != nil {
 		log.Fatal("Could not parse template files:", err)
 	}
@@ -621,7 +621,7 @@ func addevent(w http.ResponseWriter, r *http.Request) {
 		{
 
 			fmt.Println("event adiition function  chlra hai")
-			t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/addevent.html")
+			t, err := template.ParseFiles("./templates/addevent.html")
 			if err != nil {
 				log.Fatal("Could not parse template files:", err)
 			}
@@ -677,7 +677,7 @@ func updateevent(w http.ResponseWriter, r *http.Request) {
 		{
 
 			fmt.Println("question adiition function  chlra hai")
-			t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/addquestion.html")
+			t, err := template.ParseFiles("./templates/addquestion.html")
 			if err != nil {
 				log.Fatal("Could not parse template files:", err)
 			}
