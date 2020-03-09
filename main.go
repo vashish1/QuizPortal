@@ -82,7 +82,7 @@ func main() {
 	r.HandleFunc("/QuizPortal/leaderboard",leaderboard).Methods("POST")
 	r.HandleFunc("/quiz/completed",completed)
 	http.Handle("/", r)
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(":3000", nil)
 }
 
 //NewRouter .....
