@@ -171,11 +171,11 @@ func loginhandler(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("yeh chlra hai")
 				t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/login.html")
 				if err != nil {
-					log.Fatal("Could not parse template files\n")
+					fmt.Println("Could not parse template files\n",err)
 				}
 				er := t.Execute(w, em)
 				if er != nil {
-					log.Fatal("could not execute the files\n")
+					fmt.Print("could not execute the files\n",er)
 				}
 			}
 			log.Print("working")
@@ -365,11 +365,11 @@ func About(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("about chlra hai")
 	t, err := template.ParseFiles("C:/Users/yashi/go/src/QuizPortal/templates/dashboard.html")
 	if err != nil {
-		log.Fatal("Could not parse template files\n")
+		fmt.Println("Could not parse template files\n",err)
 	}
 	er := t.Execute(w, "")
 	if er != nil {
-		log.Fatal("could not execute the files\n")
+		fmt.Println("could not execute the files\n",er)
 	}
 }
 
