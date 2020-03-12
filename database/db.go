@@ -44,7 +44,7 @@ func Insertintouserdb(usercollection *mongo.Collection, u User) {
 	fmt.Println(u.Username)
 	insertResult, err := usercollection.InsertOne(context.TODO(), u)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("THe error is",err)
 	}
 
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
