@@ -413,6 +413,7 @@ func processloginform(U database.User, w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/QuizPortal/login/dashboard", 302)
 
 }
+
 func processorgloginform(U database.Organizer, w http.ResponseWriter, r *http.Request) {
 	sessionID := database.GenerateUUID()
 	rr := authenticate.CreateSecureorgCookie(U, sessionID, w, r)
