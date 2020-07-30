@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -11,10 +12,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var db = os.Getenv("DbURL")
+
 //Createdb creates a database
 func Createdb() (*mongo.Collection, *mongo.Collection, *mongo.Collection, *mongo.Collection, *mongo.Client) {
 
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI(db)
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -44,7 +47,7 @@ func Insertintouserdb(usercollection *mongo.Collection, u User) {
 	fmt.Println(u.Username)
 	insertResult, err := usercollection.InsertOne(context.TODO(), u)
 	if err != nil {
-		fmt.Println("THe error is",err)
+		fmt.Println("THe error is", err)
 	}
 
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
@@ -134,26 +137,25 @@ func Updateorg(c *mongo.Collection, o string, s string) {
 }
 
 //Updateuserscores updates the score of the user
-func Updateuserscores(c *mongo.Collection,username string,ename string,p int,l int)bool{
+func Updateuserscores(c *mongo.Collection, username string, ename string, p int, l int) bool {
 	filter := bson.D{
-		primitive.E{Key:"username",Value:username},
-		{"score",bson.D{
+		primitive.E{Key: "username", Value: username},
+		{"score", bson.D{
 			{"$elemMatch", bson.D{
 				{"event", ename},
 			}},
-			},},}
-	
-    update :=bson.D{{"$set",bson.D{
-		{"score.$.userlevel",l},
+		}}}
 
+	update := bson.D{{"$set", bson.D{
+		{"score.$.userlevel", l},
 	},
 	},
-	{
-		"$inc",bson.D{
-			{"score.$.points",p},
+		{
+			"$inc", bson.D{
+				{"score.$.points", p},
+			},
 		},
-	},
-    }
+	}
 	updateResult, err := c.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		fmt.Print(err)
@@ -165,23 +167,23 @@ func Updateuserscores(c *mongo.Collection,username string,ename string,p int,l i
 }
 
 //Findscore finds the score of a user for a particular event
-func Findscore(c *mongo.Collection,e string) []User{
+func Findscore(c *mongo.Collection, e string) []User {
 	filter := bson.D{
 		{"score", bson.D{
-			{"$elemMatch",bson.D{
+			{"$elemMatch", bson.D{
 				{"event", e},
-			},	
-		}},
-	},
-}
-	projection :=bson.D{
-		{"_id",0},
-		{"username",1},
-		{"score",1},
+			},
+			}},
+		},
+	}
+	projection := bson.D{
+		{"_id", 0},
+		{"username", 1},
+		{"score", 1},
 	}
 	var result []User
-	cur,err:=c.Find(context.Background(),filter,options.Find().SetProjection(projection))
-	
+	cur, err := c.Find(context.Background(), filter, options.Find().SetProjection(projection))
+
 	if err != nil {
 		fmt.Println("the error is:", err)
 	}
@@ -190,42 +192,41 @@ func Findscore(c *mongo.Collection,e string) []User{
 		err := cur.Decode(&elem)
 		if err != nil {
 			log.Fatal("decoding error:", err)
-		
+
 		}
 		result = append(result, elem)
-}
-if err := cur.Err(); err != nil {
-	fmt.Println("cursor error", err)
+	}
+	if err := cur.Err(); err != nil {
+		fmt.Println("cursor error", err)
+	}
+
+	cur.Close(context.TODO())
+	fmt.Println(result)
+	return result
 }
 
-cur.Close(context.TODO())
-fmt.Println(result)
-return result
-}
-
-//AddEvent adds events to the user database 
-func AddEvent(c *mongo.Collection,u,e string){
+//AddEvent adds events to the user database
+func AddEvent(c *mongo.Collection, u, e string) {
 	filter := bson.D{
-		{"username",u},
+		{"username", u},
 	}
 
 	var score Scores
-	
-		score.Event=e
-		score.Userlevel=0
-		score.Points=0
-	
-	  update:=bson.M{
-	       "$push":bson.M{
-			   "score":score,
-		   },
-	   }
-		user:=Finddb(c,u)
-		fmt.Println(user)
-	   updateResult, err := c.UpdateOne(context.Background(), filter, update)
+
+	score.Event = e
+	score.Userlevel = 0
+	score.Points = 0
+
+	update := bson.M{
+		"$push": bson.M{
+			"score": score,
+		},
+	}
+	user := Finddb(c, u)
+	fmt.Println(user)
+	updateResult, err := c.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
 }
-
