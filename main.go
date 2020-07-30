@@ -1,12 +1,13 @@
 package main
 
 import (
-	"QuizPortal/authenticate"
-	"QuizPortal/database"
+	"github.com/vashish1/QuizPortal/database"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+
+	"github.com/vashish1/QuizPortal/authenticate"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -22,9 +23,9 @@ var ans string
 var flag bool
 var event string
 
-type letstruct struct{
+type letstruct struct {
 	Username string
-	Points int
+	Points   int
 }
 
 type empty struct {
@@ -55,11 +56,11 @@ type Myevents struct {
 	List     []database.Event
 }
 
-type leader struct{
-	res      http.ResponseWriter
-	req      *http.Request
-	List     []letstruct
-	Event    string
+type leader struct {
+	res   http.ResponseWriter
+	req   *http.Request
+	List  []letstruct
+	Event string
 }
 
 func main() {
@@ -78,9 +79,9 @@ func main() {
 	r.HandleFunc("/QuizPortal/deleteEvent/", deleteevent).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/addEvent", addevent).Methods("GET", "POST")
 	r.HandleFunc("/QuizPortal/logout", logout)
-	r.HandleFunc("/answer",answer).Methods("POST")
-	r.HandleFunc("/QuizPortal/leaderboard",leaderboard).Methods("POST")
-	r.HandleFunc("/quiz/completed",completed)
+	r.HandleFunc("/answer", answer).Methods("POST")
+	r.HandleFunc("/QuizPortal/leaderboard", leaderboard).Methods("POST")
+	r.HandleFunc("/quiz/completed", completed)
 	http.Handle("/", r)
 	http.ListenAndServe(":3000", nil)
 }
@@ -92,10 +93,10 @@ func NewRouter() *mux.Router {
 	return r
 }
 
-func completed(w http.ResponseWriter,r *http.Request){
+func completed(w http.ResponseWriter, r *http.Request) {
 	var c empty
-	c.res=w
-	c.req=r
+	c.res = w
+	c.req = r
 	fmt.Println("yeh chlra hai")
 	t, err := template.ParseFiles("./templates/completed.html")
 	if err != nil {
@@ -171,11 +172,11 @@ func loginhandler(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("yeh chlra hai")
 				t, err := template.ParseFiles("./templates/login.html")
 				if err != nil {
-					fmt.Println("Could not parse template files\n",err)
+					fmt.Println("Could not parse template files\n", err)
 				}
 				er := t.Execute(w, em)
 				if er != nil {
-					fmt.Print("could not execute the files\n",er)
+					fmt.Print("could not execute the files\n", er)
 				}
 			}
 			log.Print("working")
@@ -237,7 +238,7 @@ func organizerhandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func renderQuizTemplate(data Quiz){
+func renderQuizTemplate(data Quiz) {
 	t, err := template.ParseFiles("./templates/quiz.html")
 	fmt.Println("anushiv testing 3")
 	if err != nil {
@@ -248,22 +249,22 @@ func renderQuizTemplate(data Quiz){
 		log.Fatal("could not execute the files\n:", er)
 	}
 }
-func leaderboard(w http.ResponseWriter,r *http.Request){
-	 event:=r.FormValue("eventname")
-	 d:=database.Findscore(cl1,event)
-	 fmt.Println("data",d)
-	 var data []letstruct
-	 for _,user:=range d{
-		 var x letstruct
-		 x.Username=user.Username
-		 x.Points=user.Score[0].Points
-		 data=append(data,x)
-	 }
-	 var let leader
-	 let.res=w
-	 let.req=r
-	 let.List=data
-     let.Event=event
+func leaderboard(w http.ResponseWriter, r *http.Request) {
+	event := r.FormValue("eventname")
+	d := database.Findscore(cl1, event)
+	fmt.Println("data", d)
+	var data []letstruct
+	for _, user := range d {
+		var x letstruct
+		x.Username = user.Username
+		x.Points = user.Score[0].Points
+		data = append(data, x)
+	}
+	var let leader
+	let.res = w
+	let.req = r
+	let.List = data
+	let.Event = event
 	t, err := template.ParseFiles("./templates/leaderboard.html")
 	fmt.Println(" testing leaderboard")
 	if err != nil {
@@ -276,70 +277,70 @@ func leaderboard(w http.ResponseWriter,r *http.Request){
 }
 
 func quizhandler(w http.ResponseWriter, r *http.Request) {
-	qu.res=w
-	qu.req=r
+	qu.res = w
+	qu.req = r
 	var level int
 
-	username:=findusername(w,r)
-	x:=database.Findfromorganizerdb(cl2,username)
-	if x==true{
-		http.Redirect(w,r,"/QuizPortal/organizer/dashboard",302)
+	username := findusername(w, r)
+	x := database.Findfromorganizerdb(cl2, username)
+	if x == true {
+		http.Redirect(w, r, "/QuizPortal/organizer/dashboard", 302)
 	}
-	user:=database.Finddb(cl1,username)
+	user := database.Finddb(cl1, username)
 	fmt.Print("oye")
-	if flag==true{
-		flag=false
-	}else if event!=""&&event!=(r.FormValue("eventname")){
-		event=r.FormValue("eventname")
-		database.AddEvent(cl1,username,event)
-	}else if event==""&&flag==false{
-		event=r.FormValue("eventname")
+	if flag == true {
+		flag = false
+	} else if event != "" && event != (r.FormValue("eventname")) {
+		event = r.FormValue("eventname")
+		database.AddEvent(cl1, username, event)
+	} else if event == "" && flag == false {
+		event = r.FormValue("eventname")
 	}
 	fmt.Print("oye")
-	if event!=""{
-		fmt.Print("ewent",event)
-		qu.Eventname=event
-	    for _,score:=range user.Score{
-		   if score.Event==event{
-			level=score.Userlevel
+	if event != "" {
+		fmt.Print("ewent", event)
+		qu.Eventname = event
+		for _, score := range user.Score {
+			if score.Event == event {
+				level = score.Userlevel
 			}
-			
+
 		}
-		fmt.Print("level",level)
-		if level==2{
-			http.Redirect(w,r,"/quiz/completed",302)
-		}else{
-			qlist:=database.Findfromquizdb(cl4,event)
-			qu.Q=qlist[level]
+		fmt.Print("level", level)
+		if level == 2 {
+			http.Redirect(w, r, "/quiz/completed", 302)
+		} else {
+			qlist := database.Findfromquizdb(cl4, event)
+			qu.Q = qlist[level]
 			renderQuizTemplate(qu)
 			fmt.Println("Part 1")
 		}
 	}
 }
 
-func answer(w http.ResponseWriter,r *http.Request) {
-		fmt.Println("Part 2")
-		var level int
-		event:=r.FormValue("eventname")
-		username:=findusername(w,r)
-		user:=database.Finddb(cl1,username)
-		
-	    for _,score:=range user.Score{
-            if score.Event==event{
-				level=score.Userlevel
-			}
-		}
-		qlist:=database.Findfromquizdb(cl4,event)
-		Q:=qlist[level]
-		ans:=r.FormValue("answer")
-		if ans!=Q.Answer{
-			fmt.Println("Answer is not correct")
-		}else{
-			fmt.Println("answer is correct")
-			flag=database.Updateuserscores(cl1,username,event,10,level+1)
-			http.Redirect(w,r,"/quiz",302)
+func answer(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Part 2")
+	var level int
+	event := r.FormValue("eventname")
+	username := findusername(w, r)
+	user := database.Finddb(cl1, username)
+
+	for _, score := range user.Score {
+		if score.Event == event {
+			level = score.Userlevel
 		}
 	}
+	qlist := database.Findfromquizdb(cl4, event)
+	Q := qlist[level]
+	ans := r.FormValue("answer")
+	if ans != Q.Answer {
+		fmt.Println("Answer is not correct")
+	} else {
+		fmt.Println("answer is correct")
+		flag = database.Updateuserscores(cl1, username, event, 10, level+1)
+		http.Redirect(w, r, "/quiz", 302)
+	}
+}
 
 //dashboard ....
 func dashboard(w http.ResponseWriter, r *http.Request) {
@@ -365,11 +366,11 @@ func About(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("about chlra hai")
 	t, err := template.ParseFiles("./templates/about.html")
 	if err != nil {
-		fmt.Println("Could not parse template files\n",err)
+		fmt.Println("Could not parse template files\n", err)
 	}
 	er := t.Execute(w, "")
 	if er != nil {
-		fmt.Println("could not execute the files\n",er)
+		fmt.Println("could not execute the files\n", er)
 	}
 }
 
@@ -495,6 +496,7 @@ func (q Quiz) Checksession() bool {
 	}
 	return false
 }
+
 //Checksession ....
 func (em empty) Checksession() bool {
 	res, err := authenticate.ReadSecureCookieValues(em.res, em.req)
@@ -503,8 +505,6 @@ func (em empty) Checksession() bool {
 	}
 	return false
 }
-
-
 
 //Usertype defines thetype of user
 func (q Quiz) Usertype() bool {
@@ -519,7 +519,6 @@ func (q Quiz) Usertype() bool {
 	return false
 }
 
-
 //Checksession ....
 func (let leader) Checksession() bool {
 	res, err := authenticate.ReadSecureCookieValues(let.res, let.req)
@@ -528,8 +527,6 @@ func (let leader) Checksession() bool {
 	}
 	return false
 }
-
-
 
 //Usertype defines thetype of user
 func (let leader) Usertype() bool {
@@ -707,4 +704,3 @@ func updateevent(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-	

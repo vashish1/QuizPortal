@@ -1,9 +1,10 @@
 package authenticate
 
 import (
-	"QuizPortal/database"
 	"fmt"
 	"net/http"
+
+	"github.com/vashish1/QuizPortal/database"
 
 	"time"
 
@@ -38,6 +39,7 @@ func CreateSecureCookie(u database.User, sessionID string, w http.ResponseWriter
 	return nil
 
 }
+
 //CreateSecureorgCookie .....
 func CreateSecureorgCookie(u database.Organizer, sessionID string, w http.ResponseWriter, r *http.Request) error {
 

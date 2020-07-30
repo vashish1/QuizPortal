@@ -1,10 +1,11 @@
 package authenticate
 
 import (
-	"QuizPortal/database"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/vashish1/QuizPortal/database"
 
 	"github.com/gorilla/sessions"
 )
