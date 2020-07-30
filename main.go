@@ -1,11 +1,13 @@
 package main
 
 import (
-	"github.com/vashish1/QuizPortal/database"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/vashish1/QuizPortal/database"
 
 	"github.com/vashish1/QuizPortal/authenticate"
 
@@ -62,6 +64,7 @@ type leader struct {
 	List  []letstruct
 	Event string
 }
+var port =os.Getenv("PORT")
 
 func main() {
 	r := NewRouter()
@@ -83,7 +86,7 @@ func main() {
 	r.HandleFunc("/QuizPortal/leaderboard", leaderboard).Methods("POST")
 	r.HandleFunc("/quiz/completed", completed)
 	http.Handle("/", r)
-	http.ListenAndServe(":3000", nil)
+	http.ListenAndServe(":"+port, nil)
 }
 
 //NewRouter .....
