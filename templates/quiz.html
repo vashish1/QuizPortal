@@ -18,39 +18,45 @@
 		<img src="/static/img/mmil_logo.jpg" width="50px"><a href="dashboard.html">MMIL</a>
 		{{if .Checksession}}
 		<button class="button" onclick="logout()">Log Out</button>
+		<div class="center">
+			<div class="info-1">
+			<a href="/QuizPortal/events" class="about">Live Events</a>
+			</div>
+			<div class="info-2">
+				<p class="about">{{.Q.Event}}</p>
+			</div>	
+			<div class="info-1">
+				<form method="POST" action="/QuizPortal/leaderboard">
+					
+					<input type="hidden" name="eventname" value="{{ .Q.Event }}">
+					<button type="submit" class="btn1">LEADERBOARD</button>
+				</form></div> 
+		</div>
+		<div class="quizzes">
+			<div class="quiz">
+				{{ if .Usertype }}
+				<a href="/QuizPortal/login" style="font-family: arca"><u>Log in as a Participant!</u></a>
+				 {{else}}
+				<h3>{{ .Q.Title }}</h3>
+				<p>{{ .Q.Description }}</p>
+				<form method="POST" action="/answer">
+					<input type="hidden" name="eventname" value="{{.Eventname}}">
+					<input type="text" name="answer" required="" placeholder="Your response">
+					<button type="submit" class="btn btn-secondary">Submit</button>
+				</form>
+				{{end}}
+			</div>
+		</div>
 		{{ else }}
 		<button onclick="login()">Log In</button>
 		<button class="signn" onclick="signup()">Sign Up</button>
+	        </div>
+	          <p style="text-align: center;font-size: 23px;margin-top: 100px;color:rgb(14, 13, 13);">
+
+		        <a href='/QuizPortal/login' class="event">Log in as a Participant!</a>
+	              </p>
+         </div>
 		{{ end}}
-	</div>
-	<div class="center">
-		<div class="info-1">
-		<a href="/QuizPortal/events" class="about">Live Events</a>
-		</div>
-		<div class="info-2">
-			<p class="about">{{.Q.Event}}</p>
-		</div>	
-		<div class="info-1">
-			<form method="POST" action="/QuizPortal/leaderboard">
-				
-				<input type="hidden" name="eventname" value="{{ .Q.Event }}">
-				<button type="submit" class="btn1">LEADERBOARD</button>
-			</form></div> 
-	</div>
-	<div class="quizzes">
-		<div class="quiz">
-			{{ if .Usertype }}
-			<a href="/QuizPortal/login" style="font-family: arca"><u>Log in as a Participant!</u></a>
-			 {{else}}
-			<h3>{{ .Q.Title }}</h3>
-			<p>{{ .Q.Description }}</p>
-			<form method="POST" action="/answer">
-				<input type="hidden" name="eventname" value="{{.Eventname}}">
-				<input type="text" name="answer" required="" placeholder="Your response">
-				<button type="submit" class="btn btn-secondary">Submit</button>
-			</form>
-			{{end}}
-		</div>
 	</div>
 </div>
 <script src="/static/js/app.js"></script>
